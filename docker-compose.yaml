@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  postgresql:
+    image: bitnami/postgresql
+    container_name: postgresql
+    hostname: postgresql
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+    environment:
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d nestcleanapi -U postgresql"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  nestcleanapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nestcleanapi
+    container_name: nestcleanapi
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    ports:
+      - 3333:3333
+    networks:
+      - app-network
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - DATABASE_URL=${DATABASE_URL}
+    restart: always
+
+networks:
+  app-network:
+    name: 'app-network'
+    driver: bridge
+
+volumes:
+  postgresql-data:
