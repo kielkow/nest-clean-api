@@ -7,7 +7,12 @@ import {
 } from '@nestjs/common'
 import { hash } from 'bcryptjs'
 
-import { CreateAccountDto } from 'src/dtos/create-account-dto'
+import {
+  CreateAccountSchema,
+  CreateAccountDTO,
+} from 'src/dtos/create-account-dto'
+
+import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe'
 
 import { PrismaService } from 'src/prisma/prisma.service'
 
@@ -17,7 +22,10 @@ export class CreateAccoutController {
 
   @Post('/create')
   @HttpCode(201)
-  async handle(@Body() data: CreateAccountDto) {
+  async handle(
+    @Body(new ZodValidationPipe(CreateAccountSchema))
+    data: CreateAccountDTO,
+  ) {
     const userAlreadyExists = await this.prisma.user.findUnique({
       where: {
         email: data.email,
