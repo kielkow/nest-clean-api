@@ -5,6 +5,8 @@ export const envSchema = z.object({
 
   JWT_SECRET: z.string().default('secret'),
   JWT_EXPIRES_IN: z.string().default('1d'),
+  JWT_PRIVATE_KEY: z.string(),
+  JWT_PUBLIC_KEY: z.string(),
 
   DATABASE_URL: z
     .string()
