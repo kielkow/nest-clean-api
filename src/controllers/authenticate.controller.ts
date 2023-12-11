@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt'
 import {
   AuthenticateSchema,
   AuthenticateSchemaDTO,
-} from 'src/dtos/authenticate-dto'
+} from 'src/dtos/authenticate.dto'
 
 import { PrismaService } from 'src/prisma/prisma.service'
 import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe'

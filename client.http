@@ -20,3 +20,15 @@ Content-Type: application/json
   "email": "jonhdoe@example.com",
   "password": "12345678"
 }
+
+###
+
+# @name create_question
+POST {{baseUrl}}/questions
+Content-Type: application/json
+
+{
+  "title": "How to create a question?",
+  "content": "I'm trying to create a question, but I don't know how to do it. Can someone help me?",
+  "authorId": "96ab6324-987b-11ee-b9d1-0242ac120002"
+}
