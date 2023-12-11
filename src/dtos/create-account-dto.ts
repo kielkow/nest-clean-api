@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 const CreateAccountSchema = z.object({
-  email: z.string().email(),
   name: z.string(),
+  email: z.string().email(),
   password: z.string().min(8),
 })
 
