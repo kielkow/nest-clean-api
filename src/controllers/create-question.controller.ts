@@ -1,6 +1,9 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
+import { UserPayload } from 'src/auth/jwt.strategy'
+
+import { CurrentUser } from 'src/auth/current-user.decorator'
 
 import {
   CreateQuestionSchema,
@@ -19,6 +22,8 @@ export class CreateQuestionController {
   @Post('/create')
   @HttpCode(201)
   async handle(
+    @CurrentUser() user: UserPayload,
+
     @Body(new ZodValidationPipe(CreateQuestionSchema))
     data: CreateQuestionDTO,
   ) {
@@ -27,7 +32,7 @@ export class CreateQuestionController {
         title: data.title,
         content: data.content,
         slug: data.title.toLowerCase().replace(/ /g, '-'),
-        authorId: data.authorId,
+        authorId: user.sub,
       },
     })
   }
