@@ -31,9 +31,13 @@ export class CreateQuestionController {
       data: {
         title: data.title,
         content: data.content,
-        slug: data.title.toLowerCase().replace(/ /g, '-'),
+        slug: convertToSlug(data.title),
         authorId: user.sub,
       },
     })
   }
+}
+
+function convertToSlug(text: string): string {
+  return text.toLowerCase().replace(/\s+/g, '-')
 }
