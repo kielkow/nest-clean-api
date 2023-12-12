@@ -2,7 +2,7 @@
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name create_account
-POST {{baseUrl}}/accounts/create
+POST {{baseUrl}}/accounts
 Content-Type: application/json
 
 {
@@ -34,3 +34,10 @@ Authorization: Bearer {{authToken}}
   "content": "I'm trying to create a question, but I don't know how to do it. Can someone help me?",
   "authorId": "96ab6324-987b-11ee-b9d1-0242ac120002"
 }
+
+###
+
+# @name list_questions
+GET {{baseUrl}}/questions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

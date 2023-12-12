@@ -20,7 +20,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 export class CreateAccoutController {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Post('/create')
+  @Post()
   @HttpCode(201)
   async handle(
     @Body(new ZodValidationPipe(CreateAccountSchema))

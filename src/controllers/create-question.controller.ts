@@ -19,7 +19,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 export class CreateQuestionController {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Post('/create')
+  @Post()
   @HttpCode(201)
   async handle(
     @CurrentUser() user: UserPayload,
