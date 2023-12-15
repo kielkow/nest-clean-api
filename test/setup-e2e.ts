@@ -1,1 +1,1 @@
-console.log('setup-e2e.ts');
+console.log('setup-e2e.ts')
