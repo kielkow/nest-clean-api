@@ -10,11 +10,11 @@ import { hash } from 'bcryptjs'
 import {
   CreateAccountSchema,
   CreateAccountDTO,
-} from 'src/dtos/create-account.dto'
+} from '@/dtos/create-account.dto'
 
-import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '@/pipes/zod-validation-pipe'
 
-import { PrismaService } from 'src/prisma/prisma.service'
+import { PrismaService } from '@/prisma/prisma.service'
 
 @Controller('/accounts')
 export class CreateAccoutController {
