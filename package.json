@@ -21,7 +21,7 @@
     "test:watch": "vitest run --watch",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --ci",
-    "test:e2e": "vitest run --config ./vitest.e2e.config.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
