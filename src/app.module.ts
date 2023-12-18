@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module'
 import { PrismaService } from './prisma/prisma.service'
 
 import { AuthenticateController } from './controllers/authenticate'
-import { CreateAccoutController } from './controllers/create-account.controller'
+import { CreateAccoutController } from './controllers/create-account'
 import { CreateQuestionController } from './controllers/create-question.controller'
 import { ListQuestionsController } from './controllers/list-questions.controller'
 
