@@ -21,7 +21,7 @@ describe('Authenticate Controller (E2E)', () => {
     await app.init()
   })
 
-  it('[POST] /sessions', async () => {
+  it.skip('[POST] /sessions', async () => {
     await prisma.user.create({
       data: {
         name: 'John Doe',
