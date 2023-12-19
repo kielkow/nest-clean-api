@@ -18,7 +18,9 @@ import { JwtStrategy } from './jwt.strategy'
       useFactory: async (configService: ConfigService<Env, true>) => {
         const secret = configService.get('JWT_SECRET', { infer: true })
         const expiresIn = configService.get('JWT_EXPIRES_IN', { infer: true })
-        const privateKey = configService.get('JWT_PRIVATE_KEY', { infer: true })
+        const privateKey = configService.get('JWT_PRIVATE_KEY', {
+          infer: true,
+        })
         const publicKey = configService.get('JWT_PUBLIC_KEY', { infer: true })
 
         return {
