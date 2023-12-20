@@ -5,8 +5,7 @@ import { envSchema } from './env'
 
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
-
-import { PrismaService } from './prisma/prisma.service'
+import { DatabaseModule } from './database/database.module'
 
 @Module({
   imports: [
@@ -16,7 +15,7 @@ import { PrismaService } from './prisma/prisma.service'
     }),
     AuthModule,
     HttpModule,
+    DatabaseModule,
   ],
-  providers: [PrismaService],
 })
 export class AppModule {}

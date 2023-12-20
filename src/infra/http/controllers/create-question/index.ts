@@ -12,7 +12,7 @@ import {
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { PrismaService } from '@/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
