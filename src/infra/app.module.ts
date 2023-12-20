@@ -5,10 +5,10 @@ import { envSchema } from './env'
 import { AuthModule } from './auth/auth.module'
 import { PrismaService } from './prisma/prisma.service'
 
-import { AuthenticateController } from './controllers/authenticate'
-import { CreateAccoutController } from './controllers/create-account'
-import { CreateQuestionController } from './controllers/create-question'
-import { ListQuestionsController } from './controllers/list-questions'
+import { AuthenticateController } from './http/controllers/authenticate'
+import { CreateAccoutController } from './http/controllers/create-account'
+import { CreateQuestionController } from './http/controllers/create-question'
+import { ListQuestionsController } from './http/controllers/list-questions'
 
 @Module({
   imports: [

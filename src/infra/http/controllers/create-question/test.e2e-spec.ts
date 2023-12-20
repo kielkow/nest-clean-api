@@ -3,8 +3,8 @@ import { hash } from 'bcryptjs'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma/prisma.service'
+import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 
 describe('Create Question Controller (E2E)', () => {

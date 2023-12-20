@@ -12,9 +12,9 @@ import {
   CreateAccountDTO,
 } from '@/dtos/create-account.dto'
 
-import { ZodValidationPipe } from '@/pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { PrismaService } from '@/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 @Controller('/accounts')
 export class CreateAccoutController {
