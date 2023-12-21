@@ -34,14 +34,19 @@ export abstract class Entity<Props> {
     this._updatedAt = date
   }
 
-  protected constructor(props: Props, id?: UniqueEntityID, createdAt?: Date) {
+  protected constructor(
+    props: Props,
+    id?: UniqueEntityID,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
     this._uniqueEnityId = id ?? new UniqueEntityID()
 
     this._props = props
 
     this._createdAt = createdAt ?? new Date()
 
-    this._updatedAt = undefined
+    this._updatedAt = updatedAt || undefined
   }
 
   public equals(object?: Entity<Props>): boolean {

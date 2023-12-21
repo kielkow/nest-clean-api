@@ -98,6 +98,7 @@ export class Question extends AggregateRoot<QuestionProps> {
     props: Optional<QuestionProps, 'difficulty' | 'slug' | 'attachments'>,
     id?: UniqueEntityID,
     createdAt?: Date,
+    updatedAt?: Date,
   ) {
     const question = new Question(
       {
@@ -108,6 +109,7 @@ export class Question extends AggregateRoot<QuestionProps> {
       },
       id,
       createdAt,
+      updatedAt,
     )
 
     return question
