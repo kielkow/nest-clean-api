@@ -41,8 +41,11 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     })
   }
 
-  editQuestion(question: Question): Promise<void> {
-    throw new Error('Method not implemented.')
+  async editQuestion(question: Question): Promise<void> {
+    await this.prisma.question.update({
+      where: { id: question.id },
+      data: PrismaQuestionMapper.toPersistence(question),
+    })
   }
 
   async listRecentQuestions(params: PaginationParams): Promise<Question[]> {
