@@ -12,7 +12,11 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createQuestion(question: Question): Promise<Question> {
-    throw new Error('Method not implemented.')
+    const questionCreated = await this.prisma.question.create({
+      data: PrismaQuestionMapper.toPersistence(question),
+    })
+
+    return PrismaQuestionMapper.toDomain(questionCreated)
   }
 
   async findBySlug(slug: string): Promise<Question | undefined> {
@@ -41,7 +45,17 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     throw new Error('Method not implemented.')
   }
 
-  listRecentQuestions(params: PaginationParams): Promise<Question[]> {
-    throw new Error('Method not implemented.')
+  async listRecentQuestions(params: PaginationParams): Promise<Question[]> {
+    const { page = 1, perPage = 10 } = params
+
+    const prismaQuestions = await this.prisma.question.findMany({
+      take: perPage,
+      skip: (page - 1) * perPage,
+      orderBy: { createdAt: 'desc' },
+    })
+
+    const questions = prismaQuestions.map(PrismaQuestionMapper.toDomain)
+
+    return questions
   }
 }

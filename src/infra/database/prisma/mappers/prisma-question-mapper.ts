@@ -39,4 +39,15 @@ export class PrismaQuestionMapper {
       updatedAt,
     )
   }
+
+  static toPersistence(question: Question) {
+    return {
+      id: question.id,
+      title: question.title,
+      content: question.content,
+      authorId: question.authorId.id,
+      bestAnswerId: question.bestAnswerId?.id,
+      slug: question.slug.value,
+    }
+  }
 }
