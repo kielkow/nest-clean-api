@@ -1,11 +1,11 @@
-import { Answer as PrismaAnswer } from '@prisma/client'
+import { Prisma, Answer as PrismaAnswer } from '@prisma/client'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 
 export class PrismaAnswerMapper {
-  static toDomain(prismaAnswer: PrismaAnswer) {
+  static toDomain(prismaAnswer: PrismaAnswer): Answer {
     const { id, content, authorId, questionId, createdAt, updatedAt } =
       prismaAnswer
 
@@ -25,7 +25,7 @@ export class PrismaAnswerMapper {
     )
   }
 
-  static toPersistence(answer: Answer) {
+  static toPersistence(answer: Answer): Prisma.AnswerUncheckedCreateInput {
     const { id, content, authorId, questionId, createdAt, updatedAt } = answer
 
     return {
