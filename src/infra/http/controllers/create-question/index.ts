@@ -8,7 +8,7 @@ import { CurrentUser } from '@/infra/auth/current-user.decorator'
 import {
   CreateQuestionSchema,
   CreateQuestionDTO,
-} from '@/dtos/create-question.dto'
+} from '@/infra/http/dtos/create-question.dto'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 

@@ -10,7 +10,7 @@ import { hash } from 'bcryptjs'
 import {
   CreateAccountSchema,
   CreateAccountDTO,
-} from '@/dtos/create-account.dto'
+} from '@/infra/http/dtos/create-account.dto'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 

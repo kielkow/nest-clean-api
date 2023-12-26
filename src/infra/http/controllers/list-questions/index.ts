@@ -8,7 +8,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import {
   ListQuestionsDTO,
   ListQuestionsSchema,
-} from '@/dtos/list-questions.dto'
+} from '@/infra/http/dtos/list-questions.dto'
 
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
