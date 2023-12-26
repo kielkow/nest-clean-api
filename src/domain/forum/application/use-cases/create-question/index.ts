@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { Question } from '@/domain/forum/enterprise/entities/question'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
@@ -17,6 +19,7 @@ interface Input {
 
 type Output = ResponseHandling<void, Question>
 
+@Injectable()
 export class CreateQuestionUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 

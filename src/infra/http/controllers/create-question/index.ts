@@ -12,12 +12,12 @@ import {
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
 export class CreateQuestionController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly createQuestionUseCase: CreateQuestionUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -27,17 +27,11 @@ export class CreateQuestionController {
     @Body(new ZodValidationPipe(CreateQuestionSchema))
     data: CreateQuestionDTO,
   ) {
-    return this.prisma.question.create({
-      data: {
-        title: data.title,
-        content: data.content,
-        slug: convertToSlug(data.title),
-        authorId: user.sub,
-      },
+    return await this.createQuestionUseCase.execute({
+      title: data.title,
+      content: data.content,
+      authorId: user.sub,
+      attachmentsIds: data.attachmentsIds,
     })
   }
-}
-
-function convertToSlug(text: string): string {
-  return text.toLowerCase().replace(/\s+/g, '-')
 }
