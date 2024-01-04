@@ -8,6 +8,7 @@ import { CreateQuestionController } from './controllers/create-question'
 import { ListQuestionsController } from './controllers/list-questions'
 
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
+import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
 
 @Module({
   imports: [DatabaseModule],
@@ -17,6 +18,6 @@ import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/crea
     CreateQuestionController,
     ListQuestionsController,
   ],
-  providers: [CreateQuestionUseCase],
+  providers: [CreateQuestionUseCase, ListRecentQuestionsUseCase],
 })
 export class HttpModule {}

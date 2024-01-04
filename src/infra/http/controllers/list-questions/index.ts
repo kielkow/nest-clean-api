@@ -3,31 +3,36 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
-
 import {
   ListQuestionsDTO,
   ListQuestionsSchema,
 } from '@/infra/http/dtos/list-questions.dto'
 
+import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
+
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
 export class ListQuestionsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly listRecentQuestions: ListRecentQuestionsUseCase,
+  ) {}
 
   @Get()
   async handle(
     @Query(new ZodValidationPipe(ListQuestionsSchema)) params: ListQuestionsDTO,
   ) {
     const perPage = 10
-    const { page } = params
+    const page = params.page ? Number(params.page) : 1
 
-    return this.prisma.question.findMany({
-      take: perPage,
-      skip: (Number(page) - 1) * perPage,
-      orderBy: {
-        createdAt: 'desc',
-      },
+    const paginationParams = {
+      page,
+      perPage,
+    }
+
+    const questions = await this.listRecentQuestions.execute({
+      paginationParams,
     })
+
+    return questions
   }
 }
