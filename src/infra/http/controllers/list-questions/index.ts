@@ -10,6 +10,8 @@ import {
 
 import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
 
+import { QuestionPresenter } from '../../presenter/question-presenter'
+
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
 export class ListQuestionsController {
@@ -29,10 +31,12 @@ export class ListQuestionsController {
       perPage,
     }
 
-    const questions = await this.listRecentQuestions.execute({
+    const result = await this.listRecentQuestions.execute({
       paginationParams,
     })
 
-    return questions
+    const questions = result.getValue()
+
+    return questions ? questions.map(QuestionPresenter.toHTTP) : []
   }
 }
