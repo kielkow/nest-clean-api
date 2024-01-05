@@ -7,6 +7,8 @@ export abstract class StudentsRepository {
 
   abstract findById(id: string): Promise<Student | undefined>
 
+  abstract findByEmail(email: string): Promise<Student | undefined>
+
   abstract deleteStudent(id: string): Promise<void>
 
   abstract editStudent(question: Student): Promise<void>
