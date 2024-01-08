@@ -45,8 +45,11 @@ describe('AuthenticateStudentUseCase', () => {
       password: '12345678',
     })
 
+    const acessToken = result.getValue()
+
     expect(Success.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Success)
+    expect(acessToken).toStrictEqual(expect.any(String))
   })
 
   it('should not be able to authenticate an student that not exists', async () => {
