@@ -2,7 +2,7 @@
 
 import { Encrypter } from '@/domain/forum/application/cryptography/encrypter'
 
-export class FakeEncrypter extends Encrypter {
+export class FakeEncrypter implements Encrypter {
   async encrypt(value: Record<string, unknown>): Promise<string> {
     return Promise.resolve('access_token')
   }

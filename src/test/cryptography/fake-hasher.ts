@@ -2,7 +2,7 @@
 
 import { Hasher } from '@/domain/forum/application/cryptography/hasher'
 
-export class FakeHasher extends Hasher {
+export class FakeHasher implements Hasher {
   async hash(value: string): Promise<string> {
     return Promise.resolve(value.concat('-hashed'))
   }
