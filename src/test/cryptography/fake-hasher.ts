@@ -4,10 +4,10 @@ import { Hasher } from '@/domain/forum/application/cryptography/hasher'
 
 export class FakeHasher extends Hasher {
   async hash(value: string): Promise<string> {
-    return Promise.resolve('hashed_password')
+    return Promise.resolve(value.concat('-hashed'))
   }
 
   async compare(value: string, hash: string): Promise<boolean> {
-    return Promise.resolve(true)
+    return Promise.resolve(value.concat('-hashed') === hash)
   }
 }
