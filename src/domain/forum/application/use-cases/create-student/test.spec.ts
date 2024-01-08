@@ -1,22 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { Success } from '@/core/response-handling'
 
+import { FakeHasher } from '@/test/cryptography/fake-hasher'
 import { InMemoryStudentsRepository } from '@/test/repositories/in-memory-students-repository'
 
 import { Hasher } from '../../cryptography/hasher'
 
 import { CreateStudentUseCase } from '.'
-
-class MockHasher extends Hasher {
-  async hash(value: string): Promise<string> {
-    return Promise.resolve('hashed_password')
-  }
-
-  async compare(value: string, hash: string): Promise<boolean> {
-    return Promise.resolve(true)
-  }
-}
 
 describe('CreateStudentUseCase', () => {
   let inMemoryStudentsRepository: InMemoryStudentsRepository
@@ -26,7 +15,7 @@ describe('CreateStudentUseCase', () => {
 
   beforeEach(() => {
     inMemoryStudentsRepository = new InMemoryStudentsRepository()
-    hasher = new MockHasher()
+    hasher = new FakeHasher()
 
     sut = new CreateStudentUseCase(inMemoryStudentsRepository, hasher)
   })
