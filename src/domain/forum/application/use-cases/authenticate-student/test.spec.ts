@@ -1,4 +1,4 @@
-import { Success } from '@/core/response-handling'
+import { Fail, Success } from '@/core/response-handling'
 
 import { makeStudent } from '@/test/factories/make-student'
 import { FakeHasher } from '@/test/cryptography/fake-hasher'
@@ -47,5 +47,35 @@ describe('AuthenticateStudentUseCase', () => {
 
     expect(Success.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Success)
+  })
+
+  it('should not be able to authenticate an student that not exists', async () => {
+    const result = await sut.execute({
+      email: 'jonhdoe@email.com',
+      password: '12345678',
+    })
+
+    expect(Fail.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Fail)
+  })
+
+  it('should not be able to authenticate an student with wrong password', async () => {
+    const hashPassword = await hasher.hash('12345678')
+
+    await inMemoryStudentsRepository.createStudent(
+      makeStudent({
+        name: 'John Doe',
+        email: 'jonhdoe@email.com',
+        password: hashPassword,
+      }),
+    )
+
+    const result = await sut.execute({
+      email: 'jonhdoe@email.com',
+      password: 'wrong-password',
+    })
+
+    expect(Fail.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Fail)
   })
 })
