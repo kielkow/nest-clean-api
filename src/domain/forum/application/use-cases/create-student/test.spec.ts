@@ -47,4 +47,24 @@ describe('CreateStudentUseCase', () => {
     expect(Fail.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Fail)
   })
+
+  it('should be able to hash student password', async () => {
+    const password = '12345678'
+
+    const hashSpy = vi.spyOn(hasher, 'hash')
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      email: 'jonhdoe@email.com',
+      password,
+    })
+
+    expect(Success.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Success)
+
+    expect(hashSpy).toHaveBeenCalledWith('12345678')
+    expect(inMemoryStudentsRepository.students[0].password).toBe(
+      await hasher.hash(password),
+    )
+  })
 })
