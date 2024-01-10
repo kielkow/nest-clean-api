@@ -5,7 +5,8 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common'
-import { hash } from 'bcryptjs'
+
+import { Fail } from '@/core/response-handling'
 
 import {
   CreateAccountSchema,
@@ -14,11 +15,11 @@ import {
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { CreateStudentUseCase } from '@/domain/forum/application/use-cases/create-student'
 
 @Controller('/accounts')
 export class CreateAccoutController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly createStudentUseCase: CreateStudentUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -26,22 +27,12 @@ export class CreateAccoutController {
     @Body(new ZodValidationPipe(CreateAccountSchema))
     data: CreateAccountDTO,
   ) {
-    const userAlreadyExists = await this.prisma.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    })
+    const result = await this.createStudentUseCase.execute(data)
 
-    if (userAlreadyExists) {
-      throw new BadRequestException('User already exists')
+    if (Fail.is(result)) {
+      throw new BadRequestException(result.getValue())
     }
 
-    return this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: await hash(data.password, 8),
-      },
-    })
+    return result.getValue()
   }
 }
