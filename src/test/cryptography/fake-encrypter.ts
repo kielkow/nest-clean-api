@@ -7,7 +7,7 @@ export class FakeEncrypter implements Encrypter {
     return Promise.resolve('access_token')
   }
 
-  async decrypt(value: string): Promise<string> {
-    return Promise.resolve('decrypted_value')
+  async decrypt(value: string): Promise<Record<string, unknown>> {
+    return Promise.resolve({ id: 'user_id' })
   }
 }
