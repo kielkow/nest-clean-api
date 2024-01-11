@@ -1,12 +1,14 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   HttpCode,
   Post,
 } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
+import { ResourceAlreadyExistsError } from '@/core/errors'
 
 import {
   CreateAccountSchema,
@@ -30,7 +32,14 @@ export class CreateAccoutController {
     const result = await this.createStudentUseCase.execute(data)
 
     if (Fail.is(result)) {
-      throw new BadRequestException(result.getValue())
+      const error = result.getValue()
+
+      switch (error?.constructor) {
+        case ResourceAlreadyExistsError:
+          throw new ConflictException(error)
+        default:
+          throw new BadRequestException(error)
+      }
     }
 
     return result.getValue()

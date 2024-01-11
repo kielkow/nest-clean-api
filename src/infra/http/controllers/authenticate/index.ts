@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
@@ -13,8 +14,11 @@ import {
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
-import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
 import { Fail } from '@/core/response-handling'
+import { ResourceNotFoundError } from '@/core/errors'
+
+import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
+import { AuthenticateError } from '@/domain/forum/application/use-cases/authenticate-student/errors/authenticate-error'
 
 @Controller('/sessions')
 export class AuthenticateController {
@@ -34,7 +38,14 @@ export class AuthenticateController {
     })
 
     if (Fail.is(result)) {
-      throw new UnauthorizedException(result.getValue())
+      const error = result.getValue()
+
+      switch (error?.constructor) {
+        case ResourceNotFoundError || AuthenticateError:
+          throw new UnauthorizedException(error)
+        default:
+          throw new BadRequestException('Invalid credentials')
+      }
     }
 
     const accessToken = result.getValue()
