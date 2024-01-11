@@ -1,6 +1,5 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import {
@@ -13,7 +12,6 @@ import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases
 import { QuestionPresenter } from '../../presenter/question-presenter'
 
 @Controller('/questions')
-@UseGuards(JwtAuthGuard)
 export class ListQuestionsController {
   constructor(
     private readonly listRecentQuestions: ListRecentQuestionsUseCase,
