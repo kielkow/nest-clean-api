@@ -10,16 +10,17 @@ import {
 import { Fail } from '@/core/response-handling'
 import { ResourceAlreadyExistsError } from '@/core/errors'
 
+import { Public } from '@/infra/auth/public'
 import {
   CreateAccountSchema,
   CreateAccountDTO,
 } from '@/infra/http/dtos/create-account.dto'
-
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { CreateStudentUseCase } from '@/domain/forum/application/use-cases/create-student'
 
 @Controller('/accounts')
+@Public()
 export class CreateAccoutController {
   constructor(private readonly createStudentUseCase: CreateStudentUseCase) {}
 

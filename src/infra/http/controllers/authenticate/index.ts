@@ -11,7 +11,7 @@ import {
   AuthenticateSchema,
   AuthenticateSchemaDTO,
 } from '@/infra/http/dtos/authenticate.dto'
-
+import { Public } from '@/infra/auth/public'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { Fail } from '@/core/response-handling'
@@ -21,6 +21,7 @@ import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases
 import { AuthenticateError } from '@/domain/forum/application/use-cases/authenticate-student/errors/authenticate-error'
 
 @Controller('/sessions')
+@Public()
 export class AuthenticateController {
   constructor(private authenticateStudentUseCase: AuthenticateStudentUseCase) {}
 
