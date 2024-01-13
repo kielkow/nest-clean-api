@@ -6,6 +6,7 @@ import { envSchema } from './env'
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { DatabaseModule } from './database/database.module'
+import { EnvHelperService } from './env-helper/env-helper.service'
 
 @Module({
   imports: [
@@ -17,5 +18,6 @@ import { DatabaseModule } from './database/database.module'
     HttpModule,
     DatabaseModule,
   ],
+  providers: [EnvHelperService],
 })
 export class AppModule {}
