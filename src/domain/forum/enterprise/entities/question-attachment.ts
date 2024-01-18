@@ -18,8 +18,15 @@ export class QuestionAttachment extends Entity<QuestionAttachmentProps> {
   public static create(
     props: QuestionAttachmentProps,
     id?: UniqueEntityID,
+    createdAt?: Date,
+    updatedAt?: Date,
   ): QuestionAttachment {
-    const questionAttachment = new QuestionAttachment(props, id)
+    const questionAttachment = new QuestionAttachment(
+      props,
+      id,
+      createdAt,
+      updatedAt,
+    )
     return questionAttachment
   }
 }
