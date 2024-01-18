@@ -11,8 +11,13 @@ export class QuestionComment extends Comment<QuestionCommentProps> {
     return this.props.questionId
   }
 
-  static create(props: QuestionCommentProps, id?: UniqueEntityID) {
-    const questionComment = new QuestionComment(props, id)
+  static create(
+    props: QuestionCommentProps,
+    id?: UniqueEntityID,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
+    const questionComment = new QuestionComment(props, id, createdAt, updatedAt)
     return questionComment
   }
 }
