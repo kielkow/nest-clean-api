@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 
 import { Question } from '@/domain/forum/enterprise/entities/question'
@@ -12,6 +14,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError, Question>
 
+@Injectable()
 export class FindQuestionBySlugUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 
