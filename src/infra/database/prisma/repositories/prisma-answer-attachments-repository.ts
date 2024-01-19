@@ -3,27 +3,50 @@ import { Injectable } from '@nestjs/common'
 import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment'
 import { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
 
+import { PrismaService } from '../prisma.service'
+import { PrismaAnswerAttachmentMapper } from '../mappers/prisma-answer-attachment-mapper'
+
 @Injectable()
 export class PrismaAnswerAttachmentsRepository
   implements AnswerAttachmentsRepository
 {
-  create(answerAttachment: AnswerAttachment): Promise<AnswerAttachment> {
-    throw new Error('Method not implemented.')
+  constructor(private prisma: PrismaService) {}
+
+  async create(answerAttachment: AnswerAttachment): Promise<AnswerAttachment> {
+    const prismaAttachment = await this.prisma.attachment.create({
+      data: PrismaAnswerAttachmentMapper.toPersistence(answerAttachment),
+    })
+
+    return PrismaAnswerAttachmentMapper.toDomain(prismaAttachment)
   }
 
-  delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  async findById(id: string): Promise<AnswerAttachment | undefined> {
+    const prismaAttachment = await this.prisma.attachment.findUnique({
+      where: { id },
+    })
+
+    return prismaAttachment
+      ? PrismaAnswerAttachmentMapper.toDomain(prismaAttachment)
+      : undefined
   }
 
-  deleteByAnswerId(answerId: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  async findByAnswerId(answerId: string): Promise<AnswerAttachment[]> {
+    const prismaAttachments = await this.prisma.attachment.findMany({
+      where: { answerId },
+    })
+
+    return prismaAttachments.map(PrismaAnswerAttachmentMapper.toDomain)
   }
 
-  findByAnswerId(answerId: string): Promise<AnswerAttachment[]> {
-    throw new Error('Method not implemented.')
+  async delete(id: string): Promise<void> {
+    await this.prisma.attachment.delete({
+      where: { id },
+    })
   }
 
-  findById(id: string): Promise<AnswerAttachment | undefined> {
-    throw new Error('Method not implemented.')
+  async deleteByAnswerId(answerId: string): Promise<void> {
+    await this.prisma.attachment.deleteMany({
+      where: { answerId },
+    })
   }
 }
