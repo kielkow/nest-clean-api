@@ -25,4 +25,21 @@ export class PrismaQuestionAttachmentMapper {
       updatedAt,
     )
   }
+
+  static toPersistence(
+    questionAttachment: QuestionAttachment,
+  ): PrismaQuestionAttachment {
+    const { attachmentId, questionId, createdAt, updatedAt } =
+      questionAttachment
+
+    return {
+      id: attachmentId.id,
+      title: '',
+      url: '',
+      answerId: null,
+      questionId: questionId.id,
+      createdAt,
+      updatedAt: updatedAt || new Date(),
+    }
+  }
 }
