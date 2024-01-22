@@ -25,7 +25,7 @@ export class EditQuestionController {
     @Body(new ZodValidationPipe(EditQuestionSchema))
     data: EditQuestionDTO,
   ) {
-    return await this.editQuestionUseCase.execute({
+    await this.editQuestionUseCase.execute({
       id,
       title: data.title,
       content: data.content,
