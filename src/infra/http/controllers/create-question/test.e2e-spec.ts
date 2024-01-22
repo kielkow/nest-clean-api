@@ -1,18 +1,27 @@
 import request from 'supertest'
 import { hash } from 'bcryptjs'
+
+import { JwtService } from '@nestjs/jwt'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { AppModule } from '@/infra/app.module'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { JwtService } from '@nestjs/jwt'
+
+import { StudentFactory } from '@/test/factories/make-student'
+import { QuestionFactory } from '@/test/factories/make-question'
 
 describe('Create Question Controller (E2E)', () => {
-  let app: INestApplication, prisma: PrismaService, jwt: JwtService
+  let app: INestApplication,
+    prisma: PrismaService,
+    jwt: JwtService,
+    studentFactory: StudentFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StudentFactory, QuestionFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -20,16 +29,16 @@ describe('Create Question Controller (E2E)', () => {
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
+    studentFactory = moduleRef.get(StudentFactory)
+
     await app.init()
   })
 
   it('[POST] /questions', async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: 'John Doe',
-        email: 'jonhdoe@email.com',
-        password: await hash('12345678', 8),
-      },
+    const user = await studentFactory.makePrismaStudent({
+      name: 'John Doe',
+      email: 'jonhdoe@email.com',
+      password: await hash('12345678', 8),
     })
 
     const accessToken = jwt.sign({
