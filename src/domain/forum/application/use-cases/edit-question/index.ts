@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 
@@ -19,6 +21,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError | NotAllowedError, void>
 
+@Injectable()
 export class EditQuestionUseCase {
   constructor(
     private readonly questionsRepository: QuestionsRepository,
