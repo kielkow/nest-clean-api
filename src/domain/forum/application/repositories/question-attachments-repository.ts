@@ -1,13 +1,15 @@
 import { QuestionAttachment } from '../../enterprise/entities/question-attachment'
 
-export interface QuestionAttachmentsRepository {
-  create(questionAttachment: QuestionAttachment): Promise<QuestionAttachment>
+export abstract class QuestionAttachmentsRepository {
+  abstract create(
+    questionAttachment: QuestionAttachment,
+  ): Promise<QuestionAttachment>
 
-  delete(id: string): Promise<void>
+  abstract delete(id: string): Promise<void>
 
-  deleteByQuestionId(questionId: string): Promise<void>
+  abstract deleteByQuestionId(questionId: string): Promise<void>
 
-  findByQuestionId(questionId: string): Promise<QuestionAttachment[]>
+  abstract findByQuestionId(questionId: string): Promise<QuestionAttachment[]>
 
-  findById(id: string): Promise<QuestionAttachment | undefined>
+  abstract findById(id: string): Promise<QuestionAttachment | undefined>
 }

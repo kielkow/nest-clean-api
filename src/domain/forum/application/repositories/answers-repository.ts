@@ -1,17 +1,17 @@
 import { Answer } from '../../enterprise/entities/answer'
 
-export interface AnswersRepository {
-  createAnswer(answer: Answer): Promise<Answer>
+export abstract class AnswersRepository {
+  abstract createAnswer(answer: Answer): Promise<Answer>
 
-  findById(id: string): Promise<Answer | undefined>
+  abstract findById(id: string): Promise<Answer | undefined>
 
-  findByQuestionID(questionId: string): Promise<Answer[]>
+  abstract findByQuestionID(questionId: string): Promise<Answer[]>
 
-  deleteAnswer(id: string): Promise<void>
+  abstract deleteAnswer(id: string): Promise<void>
 
-  editAnswer(answer: Answer): Promise<void>
+  abstract editAnswer(answer: Answer): Promise<void>
 
-  listQuetionAnswers(params: {
+  abstract listQuetionAnswers(params: {
     questionId: string
     page: number
     perPage: number

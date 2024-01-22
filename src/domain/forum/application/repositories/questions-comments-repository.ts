@@ -1,15 +1,15 @@
 import { QuestionComment } from '../../enterprise/entities/question-comment'
 
-export interface QuestionsCommentsRepository {
-  create(questionComment: QuestionComment): Promise<QuestionComment>
+export abstract class QuestionsCommentsRepository {
+  abstract create(questionComment: QuestionComment): Promise<QuestionComment>
 
-  findById(id: string): Promise<QuestionComment | undefined>
+  abstract findById(id: string): Promise<QuestionComment | undefined>
 
-  findAll(params: {
+  abstract findAll(params: {
     questionId: string
     page: number
     perPage: number
   }): Promise<QuestionComment[]>
 
-  delete(id: string): Promise<void>
+  abstract delete(id: string): Promise<void>
 }
