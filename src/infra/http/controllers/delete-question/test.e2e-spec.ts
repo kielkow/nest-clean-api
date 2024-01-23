@@ -61,7 +61,7 @@ describe('Delete Question Controller (E2E)', () => {
 
     expect(response.status).toBe(204)
 
-    const question = await prisma.question.findFirst({
+    const question = await prisma.question.findUnique({
       where: {
         id: questionCreated.id,
       },
