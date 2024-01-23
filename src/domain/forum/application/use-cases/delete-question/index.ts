@@ -1,6 +1,7 @@
-import { ResponseHandling, success, fail } from '@/core/response-handling'
+import { Injectable } from '@nestjs/common'
 
 import { ResourceNotFoundError, NotAllowedError } from '@/core/errors'
+import { ResponseHandling, success, fail } from '@/core/response-handling'
 
 import { QuestionsRepository } from '../../repositories/questions-repository'
 
@@ -11,6 +12,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError | NotAllowedError, void>
 
+@Injectable()
 export class DeleteQuestionUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 
