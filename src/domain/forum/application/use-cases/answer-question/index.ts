@@ -1,8 +1,9 @@
-import { Answer } from '@/domain/forum/enterprise/entities/answer'
+import { Injectable } from '@nestjs/common'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResponseHandling, success } from '@/core/response-handling'
 
+import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment'
 import { AnswerAttachmentList } from '@/domain/forum/enterprise/entities/answer-attachment-list'
 
@@ -17,6 +18,7 @@ interface Input {
 
 type Output = ResponseHandling<void, Answer>
 
+@Injectable()
 export class AnswerQuestionUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
