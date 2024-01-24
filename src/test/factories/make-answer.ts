@@ -29,7 +29,7 @@ export class AnswerFactory {
   constructor(private prisma: PrismaService) {}
 
   async makePrismaAnswer(
-    props: AnswerProps,
+    props: Partial<AnswerProps> = {},
     id?: UniqueEntityID,
   ): Promise<Answer> {
     const answer = makeAnswer(props, id)
