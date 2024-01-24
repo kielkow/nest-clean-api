@@ -1,20 +1,12 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Controller,
-  Delete,
-  HttpCode,
-  Param,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Controller, Delete, HttpCode, Param } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
-import { NotAllowedError, ResourceNotFoundError } from '@/core/errors'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
 
 import { DeleteQuestionUseCase } from '@/domain/forum/application/use-cases/delete-question'
+import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/questions/:id')
 export class DeleteQuestionController {
@@ -33,16 +25,7 @@ export class DeleteQuestionController {
     })
 
     if (Fail.is(result)) {
-      const error = result.getValue()
-
-      switch (error?.constructor) {
-        case ResourceNotFoundError:
-          throw new ConflictException(error)
-        case NotAllowedError:
-          throw new UnauthorizedException(error)
-        default:
-          throw new BadRequestException()
-      }
+      httpErrorsTreatment(result)
     }
   }
 }

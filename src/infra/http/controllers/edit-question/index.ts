@@ -13,7 +13,7 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question'
 
-import { httpErrorsTreatment } from '../../errors-treatment'
+import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/questions/:id')
 export class EditQuestionController {

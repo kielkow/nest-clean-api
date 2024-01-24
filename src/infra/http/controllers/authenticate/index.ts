@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 
 import {
   AuthenticateSchema,
@@ -15,10 +8,9 @@ import { Public } from '@/infra/auth/public'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { Fail } from '@/core/response-handling'
-import { ResourceNotFoundError } from '@/core/errors'
 
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
-import { AuthenticateError } from '@/domain/forum/application/use-cases/authenticate-student/errors/authenticate-error'
+import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/sessions')
 @Public()
@@ -39,14 +31,7 @@ export class AuthenticateController {
     })
 
     if (Fail.is(result)) {
-      const error = result.getValue()
-
-      switch (error?.constructor) {
-        case ResourceNotFoundError || AuthenticateError:
-          throw new UnauthorizedException(error)
-        default:
-          throw new BadRequestException('Invalid credentials')
-      }
+      httpErrorsTreatment(result)
     }
 
     const accessToken = result.getValue()

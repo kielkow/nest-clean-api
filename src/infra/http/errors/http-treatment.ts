@@ -14,7 +14,7 @@ import {
 
 type ResponseErrorsType = ResponseHandling<
   ResourceNotFoundError | NotAllowedError | ResourceAlreadyExistsError,
-  void
+  unknown
 >
 
 export const httpErrorsTreatment = (result: ResponseErrorsType) => {

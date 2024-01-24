@@ -1,16 +1,6 @@
-import {
-  BadRequestException,
-  Body,
-  ConflictException,
-  Controller,
-  HttpCode,
-  Param,
-  Put,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Put } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
-import { NotAllowedError, ResourceNotFoundError } from '@/core/errors'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
@@ -22,6 +12,7 @@ import {
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-answer'
+import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/answers/:id')
 export class EditAnswerController {
@@ -45,16 +36,7 @@ export class EditAnswerController {
     })
 
     if (Fail.is(result)) {
-      const error = result.getValue()
-
-      switch (error?.constructor) {
-        case ResourceNotFoundError:
-          throw new ConflictException(error)
-        case NotAllowedError:
-          throw new UnauthorizedException(error)
-        default:
-          throw new BadRequestException()
-      }
+      httpErrorsTreatment(result)
     }
   }
 }

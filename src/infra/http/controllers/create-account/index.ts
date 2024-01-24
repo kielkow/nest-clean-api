@@ -1,14 +1,6 @@
-import {
-  BadRequestException,
-  Body,
-  ConflictException,
-  Controller,
-  HttpCode,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
-import { ResourceAlreadyExistsError } from '@/core/errors'
 
 import { Public } from '@/infra/auth/public'
 import {
@@ -18,6 +10,7 @@ import {
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { CreateStudentUseCase } from '@/domain/forum/application/use-cases/create-student'
+import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/accounts')
 @Public()
@@ -33,14 +26,7 @@ export class CreateAccoutController {
     const result = await this.createStudentUseCase.execute(data)
 
     if (Fail.is(result)) {
-      const error = result.getValue()
-
-      switch (error?.constructor) {
-        case ResourceAlreadyExistsError:
-          throw new ConflictException(error)
-        default:
-          throw new BadRequestException(error)
-      }
+      httpErrorsTreatment(result)
     }
 
     return result.getValue()
