@@ -1,16 +1,6 @@
-import {
-  BadRequestException,
-  Body,
-  ConflictException,
-  Controller,
-  HttpCode,
-  Param,
-  Put,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Put } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
-import { ResourceNotFoundError, NotAllowedError } from '@/core/errors'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
