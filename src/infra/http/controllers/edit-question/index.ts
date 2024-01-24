@@ -23,6 +23,8 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question'
 
+import { httpErrorsTreatment } from '../../errors-treatment'
+
 @Controller('/questions/:id')
 export class EditQuestionController {
   constructor(private readonly editQuestionUseCase: EditQuestionUseCase) {}
@@ -46,16 +48,7 @@ export class EditQuestionController {
     })
 
     if (Fail.is(result)) {
-      const error = result.getValue()
-
-      switch (error?.constructor) {
-        case ResourceNotFoundError:
-          throw new ConflictException(error)
-        case NotAllowedError:
-          throw new UnauthorizedException(error)
-        default:
-          throw new BadRequestException()
-      }
+      httpErrorsTreatment(result)
     }
   }
 }
