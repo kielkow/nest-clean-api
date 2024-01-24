@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Controller,
   Delete,
   HttpCode,
@@ -8,12 +9,12 @@ import {
 } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
-import { ResourceNotFoundError } from '@/core/errors'
+import { NotAllowedError, ResourceNotFoundError } from '@/core/errors'
+
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
 
 import { DeleteAnswerUseCase } from '@/domain/forum/application/use-cases/delete-answer'
-import { AuthenticateError } from '@/domain/forum/application/use-cases/authenticate-student/errors/authenticate-error'
 
 @Controller('/answers/:id')
 export class DeleteAnswerController {
@@ -35,10 +36,12 @@ export class DeleteAnswerController {
       const error = result.getValue()
 
       switch (error?.constructor) {
-        case ResourceNotFoundError || AuthenticateError:
+        case ResourceNotFoundError:
+          throw new ConflictException(error)
+        case NotAllowedError:
           throw new UnauthorizedException(error)
         default:
-          throw new BadRequestException('Invalid credentials')
+          throw new BadRequestException()
       }
     }
   }
