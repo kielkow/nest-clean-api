@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common'
+
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError, NotAllowedError } from '@/core/errors'
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 
 import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment'
 import { AnswerAttachmentList } from '@/domain/forum/enterprise/entities/answer-attachment-list'
-
-import { ResourceNotFoundError, NotAllowedError } from '@/core/errors'
 
 import { AnswersRepository } from '../../repositories/answers-repository'
 import { AnswerAttachmentsRepository } from '../../repositories/answer-attachments-repository'
@@ -18,6 +19,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError | NotAllowedError, void>
 
+@Injectable()
 export class EditAnswerUseCase {
   constructor(
     private readonly answersRepository: AnswersRepository,
