@@ -12,19 +12,21 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 import { StudentFactory } from '@/test/factories/make-student'
+import { AnswerFactory } from '@/test/factories/make-answer'
 import { QuestionFactory } from '@/test/factories/make-question'
 
-describe('Edit Question Controller (E2E)', () => {
+describe('Edit Answer Controller (E2E)', () => {
   let app: INestApplication,
     prisma: PrismaService,
     jwt: JwtService,
     studentFactory: StudentFactory,
-    questionFactory: QuestionFactory
+    questionFactory: QuestionFactory,
+    answerFactory: AnswerFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AnswerFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -34,11 +36,12 @@ describe('Edit Question Controller (E2E)', () => {
 
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    answerFactory = moduleRef.get(AnswerFactory)
 
     await app.init()
   })
 
-  it('[PUT] /questions/:id', async () => {
+  it('[PUT] /answers/:id', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
       email: 'jonhdoe@email.com',
@@ -49,28 +52,33 @@ describe('Edit Question Controller (E2E)', () => {
       sub: user.id,
     })
 
-    const questionCreated = await questionFactory.makePrismaQuestion({
-      title: 'How to create a question?',
-      content: 'I am having a hard time creating a question.',
+    const question = await questionFactory.makePrismaQuestion({
+      title: 'How to create a answer?',
+      content: 'I am having a hard time creating a answer.',
       authorId: new UniqueEntityID(user.id),
     })
 
+    const answerCreated = await answerFactory.makePrismaAnswer({
+      content: 'I am having a hard time creating a answer.',
+      authorId: new UniqueEntityID(user.id),
+      questionId: new UniqueEntityID(question.id),
+    })
+
     const response = await request(app.getHttpServer())
-      .put(`/questions/${questionCreated.id}`)
+      .put(`/answers/${answerCreated.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        title: 'How to create a question and edited?',
-        content: 'I am having a hard time editing a question.',
+        content: 'I am having a hard time editing a answer.',
       })
 
     expect(response.status).toBe(204)
 
-    const question = await prisma.question.findFirst({
+    const answer = await prisma.answer.findFirst({
       where: {
-        title: 'I am having a hard time editing a question.',
+        content: 'I am having a hard time editing a answer.',
       },
     })
 
-    expect(question).toBeTruthy()
+    expect(answer).toBeTruthy()
   })
 })
