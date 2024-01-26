@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { ResponseHandling, success } from '@/core/response-handling'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
@@ -12,6 +14,7 @@ interface Input {
 
 type Output = ResponseHandling<void, Answer[]>
 
+@Injectable()
 export class ListQuestionAnswersUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
