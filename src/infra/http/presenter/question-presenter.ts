@@ -2,6 +2,7 @@ import { Question } from '@/domain/forum/enterprise/entities/question'
 
 export interface IQuestionPresenter {
   id: string
+  authorId: string
 
   slug: string
   title: string
@@ -17,6 +18,7 @@ export class QuestionPresenter {
   static toHTTP(question: Question): IQuestionPresenter {
     return {
       id: question.id,
+      authorId: question.authorId.id,
 
       slug: question.slug.value,
       title: question.title,
