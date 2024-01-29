@@ -67,7 +67,7 @@ describe('Edit Question Controller (E2E)', () => {
 
     const question = await prisma.question.findFirst({
       where: {
-        title: 'I am having a hard time editing a question.',
+        title: 'How to create a question and edited?',
       },
     })
 
