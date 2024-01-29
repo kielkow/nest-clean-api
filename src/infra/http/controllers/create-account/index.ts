@@ -28,7 +28,5 @@ export class CreateAccoutController {
     if (Fail.is(result)) {
       httpErrorsTreatment(result)
     }
-
-    return result.getValue()
   }
 }

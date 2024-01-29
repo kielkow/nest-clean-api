@@ -31,7 +31,7 @@ describe('Create Account Controller (E2E)', () => {
 
     const user = await prisma.user.findUnique({
       where: {
-        email: response.body.email,
+        email: 'jonhdoe@email.com',
       },
     })
 
