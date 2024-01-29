@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
@@ -48,6 +50,7 @@ describe('Answer Question Controller (E2E)', () => {
     })
 
     const question = await questionFactory.makePrismaQuestion({
+      authorId: new UniqueEntityID(user.id),
       title: 'How to create a question?',
       content: 'I am having a hard time creating a question.',
     })

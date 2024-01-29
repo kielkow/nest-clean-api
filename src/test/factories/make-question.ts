@@ -38,6 +38,8 @@ export class QuestionFactory {
   ): Promise<Question> {
     const question = makeQuestion(props, id)
 
+    console.log(PrismaQuestionMapper.toPersistence(question))
+
     await this.prisma.question.create({
       data: PrismaQuestionMapper.toPersistence(question),
     })
