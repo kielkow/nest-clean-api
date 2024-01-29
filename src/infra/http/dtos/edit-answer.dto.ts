@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 const EditAnswerSchema = z.object({
-  title: z.string(),
   content: z.string(),
   attachmentsIds: z.array(z.string()).optional().default([]),
 })
