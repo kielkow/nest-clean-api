@@ -21,15 +21,11 @@ import { EnvHelperService } from '../env-helper/env-helper.service'
       inject: [EnvHelperService],
 
       useFactory: async (config: EnvHelperService) => {
-        const secret = config.get('JWT_SECRET')
-        const expiresIn = config.get('JWT_EXPIRES_IN')
         const privateKey = config.get('JWT_PRIVATE_KEY')
         const publicKey = config.get('JWT_PUBLIC_KEY')
 
         return {
-          secret,
           signOptions: {
-            expiresIn,
             algorithm: 'RS256',
           },
           privateKey: Buffer.from(privateKey, 'base64'),
