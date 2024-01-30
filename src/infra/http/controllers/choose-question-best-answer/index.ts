@@ -1,4 +1,4 @@
-import { Controller, HttpCode, Param, Put } from '@nestjs/common'
+import { Controller, HttpCode, Param, Patch } from '@nestjs/common'
 
 import { Fail } from '@/core/response-handling'
 
@@ -15,7 +15,7 @@ export class ChooseQuestionBestAnswerController {
     private readonly chooseQuestionBestAnswerUseCase: ChooseQuestionBestAnswerUseCase,
   ) {}
 
-  @Put()
+  @Patch()
   @HttpCode(204)
   async handle(
     @CurrentUser() user: UserPayload,

@@ -41,7 +41,7 @@ describe('Edit Question Controller (E2E)', () => {
     await app.init()
   })
 
-  it('[PUT] /questions/:id/best-answer/:answerId', async () => {
+  it('[PATCH] /questions/:id/best-answer/:answerId', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
       email: 'jonhdoe@email.com',
@@ -65,7 +65,7 @@ describe('Edit Question Controller (E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .put(`/questions/${questionCreated.id}/best-answer/${answerCreated.id}`)
+      .patch(`/questions/${questionCreated.id}/best-answer/${answerCreated.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.status).toBe(204)
