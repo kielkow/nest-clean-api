@@ -72,6 +72,7 @@ describe('Edit Question Controller (E2E)', () => {
 
     const question = await prisma.question.findFirst({
       where: {
+        id: questionCreated.id,
         bestAnswerId: answerCreated.id,
       },
     })
