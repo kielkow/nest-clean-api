@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 import { AnswerComment } from '@/domain/forum/enterprise/entities/answer-comment'
 
@@ -16,6 +18,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError, AnswerComment>
 
+@Injectable()
 export class CommentOnAnswerUseCase {
   constructor(
     private answersRepository: AnswersRepository,
