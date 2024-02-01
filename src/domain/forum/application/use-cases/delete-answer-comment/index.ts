@@ -1,6 +1,9 @@
-import { ResponseHandling, fail, success } from '@/core/response-handling'
-import { AnswersCommentsRepository } from '../../repositories/answers-comments-repository'
+import { Injectable } from '@nestjs/common'
+
 import { NotAllowedError, ResourceNotFoundError } from '@/core/errors'
+import { ResponseHandling, fail, success } from '@/core/response-handling'
+
+import { AnswersCommentsRepository } from '../../repositories/answers-comments-repository'
 
 interface Input {
   id: string
@@ -9,6 +12,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError | NotAllowedError, void>
 
+@Injectable()
 export class DeleteAnswerCommentUseCase {
   constructor(
     private readonly answerCommentRepository: AnswersCommentsRepository,
