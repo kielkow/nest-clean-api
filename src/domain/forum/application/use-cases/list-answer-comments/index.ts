@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 
 import { PaginationParams } from '@/core/repositories/pagination-params'
@@ -16,6 +18,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError, AnswerComment[]>
 
+@Injectable()
 export class ListAnswerCommentsUseCase {
   constructor(
     private answersRepository: AnswersRepository,
