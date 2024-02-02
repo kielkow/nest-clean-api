@@ -20,6 +20,7 @@ import { DeleteQuestionCommentController } from './controllers/delete-question-c
 import { DeleteAnswerCommentController } from './controllers/delete-answer-comment'
 import { CommentOnAnswerController } from './controllers/comment-on-answer'
 import { ListAnswerCommentsController } from './controllers/list-answer-comments'
+import { ListQuestionCommentsController } from './controllers/list-question-comments'
 
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
@@ -38,6 +39,7 @@ import { DeleteQuestionCommentUseCase } from '@/domain/forum/application/use-cas
 import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases/delete-answer-comment'
 import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/comment-on-answer'
 import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/list-answer-comments'
+import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -59,6 +61,7 @@ import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/
     DeleteAnswerCommentController,
     CommentOnAnswerController,
     ListAnswerCommentsController,
+    ListQuestionCommentsController,
   ],
   providers: [
     CreateQuestionUseCase,
@@ -78,6 +81,7 @@ import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/
     DeleteAnswerCommentUseCase,
     CommentOnAnswerUseCase,
     ListAnswerCommentsUseCase,
+    ListQuestionCommentsUseCase,
   ],
 })
 export class HttpModule {}

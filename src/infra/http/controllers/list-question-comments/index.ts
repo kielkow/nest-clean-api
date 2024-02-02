@@ -10,15 +10,15 @@ import {
   ListCommentsSchema,
 } from '../../dtos/list-comments.dto'
 
-import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/list-answer-comments'
+import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
 
 import { httpErrorsTreatment } from '../../errors/http-treatment'
 import { CommentPresenter } from '../../presenter/comment-presenter'
 
-@Controller('/answers/:id/comments')
-export class ListAnswerCommentsController {
+@Controller('/questions/:id/comments')
+export class ListQuestionCommentsController {
   constructor(
-    private readonly listAnswerCommentsUseCase: ListAnswerCommentsUseCase,
+    private readonly listQuestionCommentsUseCase: ListQuestionCommentsUseCase,
   ) {}
 
   @Get()
@@ -35,8 +35,8 @@ export class ListAnswerCommentsController {
       perPage,
     }
 
-    const result = await this.listAnswerCommentsUseCase.execute({
-      answerId: id,
+    const result = await this.listQuestionCommentsUseCase.execute({
+      questionId: id,
       paginationParams,
     })
 
