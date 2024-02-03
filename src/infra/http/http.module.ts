@@ -40,6 +40,7 @@ import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases
 import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/comment-on-answer'
 import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/list-answer-comments'
 import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
+import { UploadAttachmentController } from './controllers/upload-attachment'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -62,6 +63,7 @@ import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-case
     CommentOnAnswerController,
     ListAnswerCommentsController,
     ListQuestionCommentsController,
+    UploadAttachmentController,
   ],
   providers: [
     CreateQuestionUseCase,
