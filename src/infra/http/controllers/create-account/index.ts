@@ -14,7 +14,7 @@ import { httpErrorsTreatment } from '../../errors/http-treatment'
 
 @Controller('/accounts')
 @Public()
-export class CreateAccoutController {
+export class CreateAccountController {
   constructor(private readonly createStudentUseCase: CreateStudentUseCase) {}
 
   @Post()

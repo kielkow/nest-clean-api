@@ -9,6 +9,7 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { QuestionsCommentsRepository } from '@/domain/forum/application/repositories/questions-comments-repository'
 import { AnswersCommentsRepository } from '@/domain/forum/application/repositories/answers-comments-repository'
 import { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
+import { AttachmentsRepository } from '@/domain/forum/application/repositories/attachments-repository'
 
 import { PrismaQuestionsRepository } from './prisma/repositories/prisma-questions-repository'
 import { PrismaAnswersRepository } from './prisma/repositories/prisma-answers-repository'
@@ -59,6 +60,7 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
     AnswersCommentsRepository,
     QuestionAttachmentsRepository,
     AnswerAttachmentsRepository,
+    AttachmentsRepository,
   ],
 })
 export class DatabaseModule {}

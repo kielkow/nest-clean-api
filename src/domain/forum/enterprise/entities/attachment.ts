@@ -3,19 +3,14 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 interface AttachmentProps {
   title: string
-  path: string
   type: string
   size: number
-  link: string
+  url: string
 }
 
 export class Attachment extends Entity<AttachmentProps> {
   get title(): string {
     return this.props.title
-  }
-
-  get path(): string {
-    return this.props.path
   }
 
   get type(): string {
@@ -26,8 +21,8 @@ export class Attachment extends Entity<AttachmentProps> {
     return this.props.size
   }
 
-  get link(): string {
-    return this.props.link
+  get url(): string {
+    return this.props.url
   }
 
   private constructor(props: AttachmentProps, id?: UniqueEntityID) {

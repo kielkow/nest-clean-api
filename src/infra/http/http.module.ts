@@ -4,7 +4,7 @@ import { DatabaseModule } from '../database/database.module'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 
 import { AuthenticateController } from './controllers/authenticate'
-import { CreateAccoutController } from './controllers/create-account'
+import { CreateAccountController } from './controllers/create-account'
 import { CreateQuestionController } from './controllers/create-question'
 import { ListQuestionsController } from './controllers/list-questions'
 import { FindQuestionBySlugController } from './controllers/get-question-by-slug'
@@ -21,6 +21,8 @@ import { DeleteAnswerCommentController } from './controllers/delete-answer-comme
 import { CommentOnAnswerController } from './controllers/comment-on-answer'
 import { ListAnswerCommentsController } from './controllers/list-answer-comments'
 import { ListQuestionCommentsController } from './controllers/list-question-comments'
+import { UploadAttachmentController } from './controllers/upload-attachment'
+import { UploadAndCreateAttachmentController } from './controllers/upload-and-create-attachment'
 
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
@@ -40,13 +42,12 @@ import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases
 import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/comment-on-answer'
 import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/list-answer-comments'
 import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
-import { UploadAttachmentController } from './controllers/upload-attachment'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
   controllers: [
     AuthenticateController,
-    CreateAccoutController,
+    CreateAccountController,
     CreateQuestionController,
     ListQuestionsController,
     FindQuestionBySlugController,
@@ -64,6 +65,7 @@ import { UploadAttachmentController } from './controllers/upload-attachment'
     ListAnswerCommentsController,
     ListQuestionCommentsController,
     UploadAttachmentController,
+    UploadAndCreateAttachmentController,
   ],
   providers: [
     CreateQuestionUseCase,
