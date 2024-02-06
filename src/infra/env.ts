@@ -14,6 +14,14 @@ export const envSchema = z.object({
     .default(
       'postgresql://postgresql:postgresql@localhost:5432/nestcleanapi?schema=public',
     ),
+
+  STORAGE_TYPE: z.enum(['local', 's3']).default('local'),
+  STORAGE_LOCAL_PATH: z.string().default('./tmp'),
+  STORAGE_S3_BUCKET: z.string().default('nestcleanapi'),
+  STORAGE_S3_REGION: z.string().default('us-east-1'),
+  STORAGE_S3_ACCESS_KEY_ID: z.string(),
+  STORAGE_S3_SECRET_ACCESS_KEY: z.string(),
+  STORAGE_CLOUDFLARE_ID: z.string(),
 })
 
 export type Env = z.infer<typeof envSchema>
