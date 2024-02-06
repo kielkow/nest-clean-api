@@ -1,42 +1,39 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-} from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
-import { Public } from '@/infra/auth/public'
-import {
-  UploadAndCreateAttachmentSchema,
-  UploadAndCreateAttachmentDTO,
-} from '@/infra/http/dtos/upload-and-create-attachment.dto'
-import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
+import { InvalidFileTypeError } from '@/core/errors'
+import { ResponseHandling, fail, success } from '@/core/response-handling'
 
 import { Uploader } from '@/domain/forum/application/storage/uploader'
 import { Attachment } from '@/domain/forum/enterprise/entities/attachment'
 import { AttachmentsRepository } from '@/domain/forum/application/repositories/attachments-repository'
 
-@Controller('/create-attachment')
-@Public()
-export class UploadAndCreateAttachmentController {
+interface UploadAndCreateAttachmentParams {
+  fileName: string
+  fileType: string
+  body: Buffer
+}
+
+type UploadAndCreateAttachmentResponse = ResponseHandling<
+  InvalidFileTypeError,
+  Attachment
+>
+
+@Injectable()
+export class UploadAndCreateAttachmentUseCase {
   constructor(
     private readonly attachmentsRepository: AttachmentsRepository,
     private uploader: Uploader,
   ) {}
 
-  @Post()
-  @HttpCode(201)
-  async handle(
-    @Body(new ZodValidationPipe(UploadAndCreateAttachmentSchema))
-    data: UploadAndCreateAttachmentDTO,
-  ) {
+  async execute(
+    data: UploadAndCreateAttachmentParams,
+  ): Promise<UploadAndCreateAttachmentResponse> {
     if (
       data.fileType !== 'image/png' &&
       data.fileType !== 'image/jpeg' &&
       data.fileType !== 'image/pdf'
     ) {
-      throw new BadRequestException('Invalid file type')
+      return fail(new InvalidFileTypeError())
     }
 
     const { url } = await this.uploader.upload(data)
@@ -48,6 +45,8 @@ export class UploadAndCreateAttachmentController {
       url,
     })
 
-    await this.attachmentsRepository.create(attachment)
+    const result = await this.attachmentsRepository.create(attachment)
+
+    return success(result)
   }
 }

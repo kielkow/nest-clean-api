@@ -22,7 +22,6 @@ import { CommentOnAnswerController } from './controllers/comment-on-answer'
 import { ListAnswerCommentsController } from './controllers/list-answer-comments'
 import { ListQuestionCommentsController } from './controllers/list-question-comments'
 import { UploadAttachmentController } from './controllers/upload-attachment'
-import { UploadAndCreateAttachmentController } from './controllers/upload-and-create-attachment'
 
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
@@ -65,7 +64,6 @@ import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-case
     ListAnswerCommentsController,
     ListQuestionCommentsController,
     UploadAttachmentController,
-    UploadAndCreateAttachmentController,
   ],
   providers: [
     CreateQuestionUseCase,
