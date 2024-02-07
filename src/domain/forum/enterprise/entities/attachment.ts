@@ -1,4 +1,4 @@
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 interface AttachmentProps {
@@ -8,7 +8,7 @@ interface AttachmentProps {
   url: string
 }
 
-export class Attachment extends Entity<AttachmentProps> {
+export class Attachment extends AggregateRoot<AttachmentProps> {
   get title(): string {
     return this.props.title
   }
@@ -25,15 +25,13 @@ export class Attachment extends Entity<AttachmentProps> {
     return this.props.url
   }
 
-  private constructor(props: AttachmentProps, id?: UniqueEntityID) {
-    super(props, id)
-  }
-
   public static create(
     props: AttachmentProps,
     id?: UniqueEntityID,
+    createdAt?: Date,
+    updatedAt?: Date,
   ): Attachment {
-    const attachment = new Attachment(props, id)
+    const attachment = new Attachment(props, id, createdAt, updatedAt)
     return attachment
   }
 }

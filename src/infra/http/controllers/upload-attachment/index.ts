@@ -10,9 +10,18 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
+import { Fail } from '@/core/response-handling'
+import { InvalidFileTypeError } from '@/core/errors'
+
+import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachment'
+
+import { httpErrorsTreatment } from '../../errors/http-treatment'
+
 @Controller('/attachments')
 export class UploadAttachmentController {
-  //   constructor() {}
+  constructor(
+    private uploadAndCreateAttachmentUseCase: UploadAndCreateAttachmentUseCase,
+  ) {}
 
   @Post()
   @HttpCode(201)
@@ -30,6 +39,23 @@ export class UploadAttachmentController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(file)
+    const result = await this.uploadAndCreateAttachmentUseCase.execute({
+      fileName: file.originalname,
+      fileType: file.mimetype,
+      body: file.buffer,
+    })
+
+    const value = result.getValue()
+
+    if (Fail.is(result) || value instanceof InvalidFileTypeError || !value) {
+      return httpErrorsTreatment(result)
+    }
+
+    const attachment = value
+
+    return {
+      id: attachment.id,
+      url: attachment.url,
+    }
   }
 }

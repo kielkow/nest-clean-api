@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   ConflictException,
   UnauthorizedException,
@@ -18,14 +20,14 @@ type ResponseErrorsType = ResponseHandling<
 >
 
 export const httpErrorsTreatment = (result: ResponseErrorsType) => {
-  const error = result.getValue()
+  const error: any = result.getValue()
 
   switch (error?.constructor) {
     case ResourceNotFoundError:
-      throw new ConflictException(error)
+      throw new ConflictException(error?.message || 'Resource not found')
     case NotAllowedError:
-      throw new UnauthorizedException(error)
+      throw new UnauthorizedException(error?.message || 'Not allowed')
     default:
-      throw new BadRequestException()
+      throw new BadRequestException(error?.message || 'Bad Request')
   }
 }

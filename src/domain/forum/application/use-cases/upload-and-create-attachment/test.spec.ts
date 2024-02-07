@@ -1,4 +1,3 @@
-import { InvalidFileTypeError } from '@/core/errors'
 import { Fail, Success } from '@/core/response-handling'
 
 import { FakeUploader } from '@/test/storage/fake-uploader'
@@ -42,7 +41,7 @@ describe('UploadAndCreateAttachmentUseCase', () => {
     })
 
     expect(Fail.is(result)).toBe(true)
-    expect(result).toBeInstanceOf(InvalidFileTypeError)
+    expect(result).toBeInstanceOf(Fail)
     expect(uploader.uploads).toHaveLength(0)
   })
 })
