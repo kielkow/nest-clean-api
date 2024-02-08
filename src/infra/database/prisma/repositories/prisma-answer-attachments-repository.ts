@@ -20,6 +20,12 @@ export class PrismaAnswerAttachmentsRepository
     return PrismaAnswerAttachmentMapper.toDomain(prismaAttachment)
   }
 
+  async createMany(answerAttachments: AnswerAttachment[]): Promise<void> {
+    await this.prisma.attachment.createMany({
+      data: answerAttachments.map(PrismaAnswerAttachmentMapper.toPersistence),
+    })
+  }
+
   async findById(id: string): Promise<AnswerAttachment | undefined> {
     const prismaAttachment = await this.prisma.attachment.findUnique({
       where: { id },
@@ -41,6 +47,12 @@ export class PrismaAnswerAttachmentsRepository
   async delete(id: string): Promise<void> {
     await this.prisma.attachment.delete({
       where: { id },
+    })
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    await this.prisma.attachment.deleteMany({
+      where: { id: { in: ids } },
     })
   }
 

@@ -5,7 +5,11 @@ export abstract class QuestionAttachmentsRepository {
     questionAttachment: QuestionAttachment,
   ): Promise<QuestionAttachment>
 
+  abstract createMany(questionAttachments: QuestionAttachment[]): Promise<void>
+
   abstract delete(id: string): Promise<void>
+
+  abstract deleteMany(ids: string[]): Promise<void>
 
   abstract deleteByQuestionId(questionId: string): Promise<void>
 
