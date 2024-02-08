@@ -53,6 +53,12 @@ export class InMemoryAnswersRepository implements AnswersRepository {
       this.answers[index].attachments.getNewItems(),
     )
 
+    await this.answerAttachmentsRepository?.deleteMany(
+      this.answers[index].attachments
+        .getRemovedItems()
+        .map((attachment) => attachment.id),
+    )
+
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(answer.id),
     )
