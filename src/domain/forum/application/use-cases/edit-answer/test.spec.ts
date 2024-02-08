@@ -18,9 +18,12 @@ describe('EditAnswerUseCase', () => {
   let sut: EditAnswerUseCase
 
   beforeEach(() => {
-    inMemoryAnswersRepository = new InMemoryAnswersRepository()
     inMemoryAnswerAttachmentsRepository =
       new InMemoryAnswerAttachmentsRepository()
+
+    inMemoryAnswersRepository = new InMemoryAnswersRepository(
+      inMemoryAnswerAttachmentsRepository,
+    )
 
     sut = new EditAnswerUseCase(
       inMemoryAnswersRepository,
@@ -96,6 +99,56 @@ describe('EditAnswerUseCase', () => {
     expect(answerEdited).toBeTruthy()
     expect(answerEdited?.content).toBe('Edit Content')
     expect(answerEdited?.attachments.getItems()).toHaveLength(1)
+
+    expect(Success.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Success)
+  })
+
+  it('should be able to add and remove new attachments', async () => {
+    const answer = await inMemoryAnswersRepository.createAnswer(makeAnswer())
+
+    const payloadAttachment = AnswerAttachment.create({
+      answerId: new UniqueEntityID(answer.id),
+      attachmentId: new UniqueEntityID(),
+    })
+    const attachment = await inMemoryAnswerAttachmentsRepository.create(
+      payloadAttachment,
+    )
+
+    await sut.execute({
+      id: answer.id,
+      authorId: answer.authorId.id,
+      content: 'Edit Content',
+      attachmentsIds: [attachment.id],
+    })
+
+    const newPayloadAttachment = AnswerAttachment.create({
+      answerId: new UniqueEntityID(answer.id),
+      attachmentId: new UniqueEntityID(),
+    })
+    const newAttachment = await inMemoryAnswerAttachmentsRepository.create(
+      newPayloadAttachment,
+    )
+
+    const result = await sut.execute({
+      id: answer.id,
+      authorId: answer.authorId.id,
+      content: 'Edit Content',
+      attachmentsIds: [newAttachment.id],
+    })
+
+    const answerEdited = await inMemoryAnswersRepository.findById(answer.id)
+
+    expect(answerEdited).toBeTruthy()
+    expect(answerEdited?.content).toBe('Edit Content')
+    expect(answerEdited?.attachments.getItems()).toHaveLength(1)
+
+    expect(inMemoryAnswerAttachmentsRepository.answerAttachments).toHaveLength(
+      1,
+    )
+    expect(
+      inMemoryAnswerAttachmentsRepository.answerAttachments[0].attachmentId.id,
+    ).toEqual(newAttachment.id)
 
     expect(Success.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Success)

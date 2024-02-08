@@ -18,9 +18,12 @@ describe('EditQuestionUseCase', () => {
   let sut: EditQuestionUseCase
 
   beforeEach(() => {
-    inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository()
+
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentsRepository,
+    )
 
     sut = new EditQuestionUseCase(
       inMemoryQuestionsRepository,
@@ -112,6 +115,64 @@ describe('EditQuestionUseCase', () => {
     expect(questionEdited?.title).toBe('Edit Title')
     expect(questionEdited?.content).toBe('Edit Content')
     expect(questionEdited?.attachments.getItems()).toHaveLength(1)
+
+    expect(Success.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Success)
+  })
+
+  it('should be able to add and remove new attachments', async () => {
+    const question = await inMemoryQuestionsRepository.createQuestion(
+      makeQuestion(),
+    )
+
+    const payloadAttachment = QuestionAttachment.create({
+      questionId: new UniqueEntityID(question.id),
+      attachmentId: new UniqueEntityID(),
+    })
+    const attachment = await inMemoryQuestionAttachmentsRepository.create(
+      payloadAttachment,
+    )
+
+    await sut.execute({
+      id: question.id,
+      authorId: question.authorId.id,
+      title: 'Edit Title',
+      content: 'Edit Content',
+      attachmentsIds: [attachment.id],
+    })
+
+    const newPayloadAttachment = QuestionAttachment.create({
+      questionId: new UniqueEntityID(question.id),
+      attachmentId: new UniqueEntityID(),
+    })
+    const newAttachment = await inMemoryQuestionAttachmentsRepository.create(
+      newPayloadAttachment,
+    )
+
+    const result = await sut.execute({
+      id: question.id,
+      authorId: question.authorId.id,
+      title: 'Edit Title',
+      content: 'Edit Content',
+      attachmentsIds: [newAttachment.id],
+    })
+
+    const questionEdited = await inMemoryQuestionsRepository.findById(
+      question.id,
+    )
+
+    expect(questionEdited).toBeTruthy()
+    expect(questionEdited?.title).toBe('Edit Title')
+    expect(questionEdited?.content).toBe('Edit Content')
+    expect(questionEdited?.attachments.getItems()).toHaveLength(1)
+
+    expect(
+      inMemoryQuestionAttachmentsRepository.questionAttachments,
+    ).toHaveLength(1)
+    expect(
+      inMemoryQuestionAttachmentsRepository.questionAttachments[0].attachmentId
+        .id,
+    ).toEqual(newAttachment.id)
 
     expect(Success.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Success)
