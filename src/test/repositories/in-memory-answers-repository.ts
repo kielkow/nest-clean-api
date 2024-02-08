@@ -49,6 +49,10 @@ export class InMemoryAnswersRepository implements AnswersRepository {
     const index = this.answers.findIndex((a) => a.id === answer.id)
     this.answers[index] = answer
 
+    await this.answerAttachmentsRepository?.createMany(
+      this.answers[index].attachments.getItems(),
+    )
+
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(answer.id),
     )
