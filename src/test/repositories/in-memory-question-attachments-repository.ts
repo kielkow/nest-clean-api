@@ -13,11 +13,21 @@ export class InMemoryQuestionAttachmentsRepository
     return questionAttachment
   }
 
+  async createMany(questionAttachments: QuestionAttachment[]): Promise<void> {
+    this.questionAttachments.push(...questionAttachments)
+  }
+
   async delete(id: string): Promise<void> {
     const index = this.questionAttachments.findIndex(
       (questionAttachment) => questionAttachment.id === id,
     )
     this.questionAttachments.splice(index, 1)
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    this.questionAttachments = this.questionAttachments.filter(
+      (questionAttachment) => !ids.includes(questionAttachment.id),
+    )
   }
 
   async deleteByQuestionId(questionId: string): Promise<void> {
