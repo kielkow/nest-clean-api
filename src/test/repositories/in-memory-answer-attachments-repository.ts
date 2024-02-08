@@ -4,7 +4,7 @@ import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-atta
 export class InMemoryAnswerAttachmentsRepository
   implements AnswerAttachmentsRepository
 {
-  private answerAttachments: AnswerAttachment[] = []
+  public answerAttachments: AnswerAttachment[] = []
 
   async create(answerAttachment: AnswerAttachment): Promise<AnswerAttachment> {
     this.answerAttachments.push(answerAttachment)

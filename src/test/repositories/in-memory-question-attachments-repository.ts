@@ -4,7 +4,7 @@ import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-
 export class InMemoryQuestionAttachmentsRepository
   implements QuestionAttachmentsRepository
 {
-  private questionAttachments: QuestionAttachment[] = []
+  public questionAttachments: QuestionAttachment[] = []
 
   async create(
     questionAttachment: QuestionAttachment,
