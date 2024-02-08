@@ -50,7 +50,7 @@ export class InMemoryAnswersRepository implements AnswersRepository {
     this.answers[index] = answer
 
     await this.answerAttachmentsRepository?.createMany(
-      this.answers[index].attachments.getItems(),
+      this.answers[index].attachments.getNewItems(),
     )
 
     DomainEvents.dispatchPublisherEventsForAggregate(

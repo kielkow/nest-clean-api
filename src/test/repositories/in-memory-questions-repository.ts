@@ -46,7 +46,7 @@ export class InMemoryQuestionsRepository implements QuestionsRepository {
     this.questions[index] = question
 
     await this.questionAttachmentsRepository?.createMany(
-      this.questions[index].attachments.getItems(),
+      this.questions[index].attachments.getNewItems(),
     )
 
     if (question.bestAnswerId) {
