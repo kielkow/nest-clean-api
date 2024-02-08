@@ -15,6 +15,11 @@ export class InMemoryQuestionsRepository implements QuestionsRepository {
 
   async createQuestion(question: Question): Promise<Question> {
     this.questions.push(question)
+
+    await this.questionAttachmentsRepository?.createMany(
+      question.attachments.getItems(),
+    )
+
     return question
   }
 

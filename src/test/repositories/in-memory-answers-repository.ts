@@ -15,6 +15,10 @@ export class InMemoryAnswersRepository implements AnswersRepository {
   async createAnswer(answer: Answer): Promise<Answer> {
     this.answers.push(answer)
 
+    await this.answerAttachmentsRepository?.createMany(
+      answer.attachments.getItems(),
+    )
+
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(answer.id),
     )
