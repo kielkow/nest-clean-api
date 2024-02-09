@@ -15,6 +15,10 @@ export class InMemoryAnswersRepository implements AnswersRepository {
   async createAnswer(answer: Answer): Promise<Answer> {
     this.answers.push(answer)
 
+    await this.answerAttachmentsRepository?.createMany(
+      answer.attachments.getItems(),
+    )
+
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(answer.id),
     )
@@ -44,6 +48,16 @@ export class InMemoryAnswersRepository implements AnswersRepository {
   async editAnswer(answer: Answer): Promise<void> {
     const index = this.answers.findIndex((a) => a.id === answer.id)
     this.answers[index] = answer
+
+    await this.answerAttachmentsRepository?.createMany(
+      this.answers[index].attachments.getNewItems(),
+    )
+
+    await this.answerAttachmentsRepository?.deleteMany(
+      this.answers[index].attachments
+        .getRemovedItems()
+        .map((attachment) => attachment.id),
+    )
 
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(answer.id),

@@ -1,15 +1,23 @@
+import { Success } from '@/core/response-handling'
+
 import { InMemoryAnswersRepository } from '@/test/repositories/in-memory-answers-repository'
+import { InMemoryAnswerAttachmentsRepository } from '@/test/repositories/in-memory-answer-attachments-repository'
 
 import { AnswerQuestionUseCase } from '.'
 
-import { Success } from '@/core/response-handling'
-
 describe('AnswerQuestionUseCase', () => {
+  let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
   let inMemoryAnswersRepository: InMemoryAnswersRepository
   let sut: AnswerQuestionUseCase
 
   beforeEach(() => {
-    inMemoryAnswersRepository = new InMemoryAnswersRepository()
+    inMemoryAnswerAttachmentsRepository =
+      new InMemoryAnswerAttachmentsRepository()
+
+    inMemoryAnswersRepository = new InMemoryAnswersRepository(
+      inMemoryAnswerAttachmentsRepository,
+    )
+
     sut = new AnswerQuestionUseCase(inMemoryAnswersRepository)
   })
 
@@ -38,5 +46,20 @@ describe('AnswerQuestionUseCase', () => {
 
     expect(answer).toHaveProperty('attachments')
     expect(answer?.attachments.getItems()).toHaveLength(3)
+  })
+
+  it('should persist attachments when a new answer was created', async () => {
+    const result = await sut.execute({
+      authorId: '1',
+      questionId: '1',
+      content: 'This is the answer',
+      attachmentsIds: ['1', '2', '3'],
+    })
+
+    expect(Success.is(result)).toBe(true)
+    expect(result).toBeInstanceOf(Success)
+    expect(inMemoryAnswerAttachmentsRepository.answerAttachments).toHaveLength(
+      3,
+    )
   })
 })

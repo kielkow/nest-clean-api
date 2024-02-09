@@ -4,11 +4,15 @@ import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-atta
 export class InMemoryAnswerAttachmentsRepository
   implements AnswerAttachmentsRepository
 {
-  private answerAttachments: AnswerAttachment[] = []
+  public answerAttachments: AnswerAttachment[] = []
 
   async create(answerAttachment: AnswerAttachment): Promise<AnswerAttachment> {
     this.answerAttachments.push(answerAttachment)
     return answerAttachment
+  }
+
+  async createMany(answerAttachments: AnswerAttachment[]): Promise<void> {
+    this.answerAttachments.push(...answerAttachments)
   }
 
   async delete(id: string): Promise<void> {
@@ -16,6 +20,12 @@ export class InMemoryAnswerAttachmentsRepository
       (answerAttachment) => answerAttachment.id === id,
     )
     this.answerAttachments.splice(index, 1)
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    this.answerAttachments = this.answerAttachments.filter(
+      (answerAttachment) => !ids.includes(answerAttachment.id),
+    )
   }
 
   async deleteByAnswerId(answerId: string): Promise<void> {
