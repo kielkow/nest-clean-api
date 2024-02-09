@@ -1,4 +1,4 @@
-import { Attachment as PrismaQuestionAttachment } from '@prisma/client'
+import { Prisma, Attachment as PrismaQuestionAttachment } from '@prisma/client'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
@@ -28,18 +28,31 @@ export class PrismaQuestionAttachmentMapper {
 
   static toPersistence(
     questionAttachment: QuestionAttachment,
-  ): PrismaQuestionAttachment {
-    const { attachmentId, questionId, createdAt, updatedAt } =
-      questionAttachment
+  ): Prisma.AttachmentUpdateArgs {
+    return {
+      where: { id: questionAttachment.attachmentId.id },
+      data: {
+        questionId: questionAttachment.questionId.id,
+      },
+    }
+  }
+
+  static toPersistenceMany(
+    questionAttachment: QuestionAttachment[],
+  ): Prisma.AttachmentUpdateManyArgs {
+    const ids = questionAttachment.map((qa) => qa.attachmentId.id)
 
     return {
-      id: attachmentId.id,
-      title: '',
-      url: '',
-      answerId: null,
-      questionId: questionId.id,
-      createdAt,
-      updatedAt: updatedAt || new Date(),
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+      data: {
+        questionId: questionAttachment.length
+          ? questionAttachment[0].questionId.id
+          : undefined,
+      },
     }
   }
 }

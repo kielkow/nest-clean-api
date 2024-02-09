@@ -15,19 +15,17 @@ export class PrismaQuestionAttachmentsRepository
   async create(
     questionAttachment: QuestionAttachment,
   ): Promise<QuestionAttachment> {
-    const prismaAttachment = await this.prisma.attachment.create({
-      data: PrismaQuestionAttachmentMapper.toPersistence(questionAttachment),
-    })
+    const prismaAttachment = await this.prisma.attachment.update(
+      PrismaQuestionAttachmentMapper.toPersistence(questionAttachment),
+    )
 
     return PrismaQuestionAttachmentMapper.toDomain(prismaAttachment)
   }
 
   async createMany(questionAttachments: QuestionAttachment[]): Promise<void> {
-    await this.prisma.attachment.createMany({
-      data: questionAttachments.map(
-        PrismaQuestionAttachmentMapper.toPersistence,
-      ),
-    })
+    await this.prisma.attachment.updateMany(
+      PrismaQuestionAttachmentMapper.toPersistenceMany(questionAttachments),
+    )
   }
 
   async findById(id: string): Promise<QuestionAttachment | undefined> {

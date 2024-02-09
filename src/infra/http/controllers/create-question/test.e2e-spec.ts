@@ -10,7 +10,6 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 import { StudentFactory } from '@/test/factories/make-student'
-import { QuestionFactory } from '@/test/factories/make-question'
 
 describe('Create Question Controller (E2E)', () => {
   let app: INestApplication,
@@ -21,7 +20,7 @@ describe('Create Question Controller (E2E)', () => {
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()

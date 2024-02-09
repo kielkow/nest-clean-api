@@ -13,17 +13,17 @@ export class PrismaAnswerAttachmentsRepository
   constructor(private prisma: PrismaService) {}
 
   async create(answerAttachment: AnswerAttachment): Promise<AnswerAttachment> {
-    const prismaAttachment = await this.prisma.attachment.create({
-      data: PrismaAnswerAttachmentMapper.toPersistence(answerAttachment),
-    })
+    const prismaAttachment = await this.prisma.attachment.update(
+      PrismaAnswerAttachmentMapper.toPersistence(answerAttachment),
+    )
 
     return PrismaAnswerAttachmentMapper.toDomain(prismaAttachment)
   }
 
   async createMany(answerAttachments: AnswerAttachment[]): Promise<void> {
-    await this.prisma.attachment.createMany({
-      data: answerAttachments.map(PrismaAnswerAttachmentMapper.toPersistence),
-    })
+    await this.prisma.attachment.updateMany(
+      PrismaAnswerAttachmentMapper.toPersistenceMany(answerAttachments),
+    )
   }
 
   async findById(id: string): Promise<AnswerAttachment | undefined> {
