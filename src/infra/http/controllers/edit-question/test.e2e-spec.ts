@@ -13,18 +13,20 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 import { StudentFactory } from '@/test/factories/make-student'
 import { QuestionFactory } from '@/test/factories/make-question'
+import { AttachmentFactory } from '@/test/factories/make-attachment'
 
 describe('Edit Question Controller (E2E)', () => {
   let app: INestApplication,
     prisma: PrismaService,
     jwt: JwtService,
     studentFactory: StudentFactory,
-    questionFactory: QuestionFactory
+    questionFactory: QuestionFactory,
+    attachmentFactory: AttachmentFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -34,6 +36,7 @@ describe('Edit Question Controller (E2E)', () => {
 
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
 
     await app.init()
   })
@@ -44,7 +47,6 @@ describe('Edit Question Controller (E2E)', () => {
       email: 'jonhdoe@email.com',
       password: await hash('12345678', 8),
     })
-
     const accessToken = jwt.sign({
       sub: user.id,
     })
@@ -55,12 +57,26 @@ describe('Edit Question Controller (E2E)', () => {
       authorId: new UniqueEntityID(user.id),
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment({
+      title: 'attachment1',
+      type: 'image/png',
+      size: 1000,
+      url: 'http://attachment1.com',
+    })
+    const attachment2 = await attachmentFactory.makePrismaAttachment({
+      title: 'attachment2',
+      type: 'image/jpeg',
+      size: 2000,
+      url: 'http://attachment2.com',
+    })
+
     const response = await request(app.getHttpServer())
       .put(`/questions/${questionCreated.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         title: 'How to create a question and edited?',
         content: 'I am having a hard time editing a question.',
+        attachmentsIds: [attachment1.id, attachment2.id],
       })
 
     expect(response.status).toBe(204)
@@ -70,7 +86,15 @@ describe('Edit Question Controller (E2E)', () => {
         title: 'How to create a question and edited?',
       },
     })
-
     expect(question).toBeTruthy()
+
+    const questionAttachments = await prisma.attachment.findMany({
+      where: {
+        questionId: question?.id,
+      },
+    })
+    expect(questionAttachments).toHaveLength(2)
+    expect(questionAttachments[0].id).toBe(attachment1.id)
+    expect(questionAttachments[1].id).toBe(attachment2.id)
   })
 })
