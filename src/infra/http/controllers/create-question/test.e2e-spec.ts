@@ -60,8 +60,6 @@ describe('Create Question Controller (E2E)', () => {
       url: 'http://attachment2.com',
     })
 
-    console.log('ATTACHMENTS IDS TEST', attachment1.id, attachment2.id)
-
     const response = await request(app.getHttpServer())
       .post('/questions')
       .set('Authorization', `Bearer ${accessToken}`)
