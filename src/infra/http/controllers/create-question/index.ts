@@ -25,6 +25,8 @@ export class CreateQuestionController {
     @Body(new ZodValidationPipe(CreateQuestionSchema))
     data: CreateQuestionDTO,
   ) {
+    console.log('ATTACHMENTS IDS CONTROLLER', data.attachmentsIds)
+
     return await this.createQuestionUseCase.execute({
       title: data.title,
       content: data.content,

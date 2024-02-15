@@ -60,13 +60,15 @@ describe('Create Question Controller (E2E)', () => {
       url: 'http://attachment2.com',
     })
 
+    console.log('ATTACHMENTS IDS TEST', attachment1.id, attachment2.id)
+
     const response = await request(app.getHttpServer())
       .post('/questions')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         title: 'How to create a question?',
         content: 'I am having a hard time creating a question.',
-        attachments: [attachment1.id, attachment2.id],
+        attachmentsIds: [attachment1.id, attachment2.id],
       })
     expect(response.status).toBe(201)
 
