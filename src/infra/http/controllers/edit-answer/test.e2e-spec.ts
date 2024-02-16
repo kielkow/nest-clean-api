@@ -14,6 +14,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { StudentFactory } from '@/test/factories/make-student'
 import { AnswerFactory } from '@/test/factories/make-answer'
 import { QuestionFactory } from '@/test/factories/make-question'
+import { AttachmentFactory } from '@/test/factories/make-attachment'
 
 describe('Edit Answer Controller (E2E)', () => {
   let app: INestApplication,
@@ -21,12 +22,18 @@ describe('Edit Answer Controller (E2E)', () => {
     jwt: JwtService,
     studentFactory: StudentFactory,
     questionFactory: QuestionFactory,
-    answerFactory: AnswerFactory
+    answerFactory: AnswerFactory,
+    attachmentFactory: AttachmentFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory, AnswerFactory],
+      providers: [
+        StudentFactory,
+        QuestionFactory,
+        AnswerFactory,
+        AttachmentFactory,
+      ],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -37,6 +44,7 @@ describe('Edit Answer Controller (E2E)', () => {
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
     answerFactory = moduleRef.get(AnswerFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
 
     await app.init()
   })
@@ -64,13 +72,26 @@ describe('Edit Answer Controller (E2E)', () => {
       questionId: new UniqueEntityID(question.id),
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment({
+      title: 'attachment1',
+      type: 'image/png',
+      size: 1000,
+      url: 'http://attachment1.com',
+    })
+    const attachment2 = await attachmentFactory.makePrismaAttachment({
+      title: 'attachment2',
+      type: 'image/jpeg',
+      size: 2000,
+      url: 'http://attachment2.com',
+    })
+
     const response = await request(app.getHttpServer())
       .put(`/answers/${answerCreated.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         content: 'I am having a hard time editing a answer.',
+        attachmentsIds: [attachment1.id, attachment2.id],
       })
-
     expect(response.status).toBe(204)
 
     const answer = await prisma.answer.findFirst({
@@ -78,7 +99,15 @@ describe('Edit Answer Controller (E2E)', () => {
         content: 'I am having a hard time editing a answer.',
       },
     })
-
     expect(answer).toBeTruthy()
+
+    const answerAttachments = await prisma.attachment.findMany({
+      where: {
+        answerId: answer?.id,
+      },
+    })
+    expect(answerAttachments).toHaveLength(2)
+    expect(answerAttachments[0].id).toBe(attachment1.id)
+    expect(answerAttachments[1].id).toBe(attachment2.id)
   })
 })

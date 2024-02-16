@@ -78,7 +78,6 @@ describe('Edit Question Controller (E2E)', () => {
         content: 'I am having a hard time editing a question.',
         attachmentsIds: [attachment1.id, attachment2.id],
       })
-
     expect(response.status).toBe(204)
 
     const question = await prisma.question.findFirst({
