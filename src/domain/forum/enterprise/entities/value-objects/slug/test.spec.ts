@@ -1,4 +1,4 @@
-import { Slug } from './slug'
+import { Slug } from '.'
 
 test('create an slug', async () => {
   const slug = Slug.createFromText('This Is- the_ Slug @')

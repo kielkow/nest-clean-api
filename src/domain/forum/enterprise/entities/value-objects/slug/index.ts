@@ -1,6 +1,6 @@
 import { ValueObject } from '@/core/entities/value-object'
 
-interface SlugProps {
+export interface SlugProps {
   value: string
 }
 
