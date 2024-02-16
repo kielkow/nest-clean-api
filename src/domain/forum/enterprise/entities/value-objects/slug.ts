@@ -1,7 +1,14 @@
-export class Slug {
+import { ValueObject } from '@/core/entities/value-object'
+
+interface SlugProps {
+  value: string
+}
+
+export class Slug extends ValueObject<SlugProps> {
   public value: string
 
   private constructor(value: string) {
+    super({ value })
     this.value = value
   }
 
