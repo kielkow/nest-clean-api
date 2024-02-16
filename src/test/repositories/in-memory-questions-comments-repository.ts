@@ -1,10 +1,15 @@
 import { QuestionComment } from '@/domain/forum/enterprise/entities/question-comment'
 import { QuestionsCommentsRepository } from '@/domain/forum/application/repositories/questions-comments-repository'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
+
+import { InMemoryStudentsRepository } from './in-memory-students-repository'
 
 export class InMemoryQuestionsCommentsRepository
   implements QuestionsCommentsRepository
 {
   private questionsComments: QuestionComment[] = []
+
+  constructor(private studentsRepository: InMemoryStudentsRepository) {}
 
   async create(questionComment: QuestionComment): Promise<QuestionComment> {
     this.questionsComments.push(questionComment)
@@ -30,6 +35,39 @@ export class InMemoryQuestionsCommentsRepository
     const questionComments = this.questionsComments.filter(
       (comment) => comment.questionId.id === questionId,
     )
+
+    return questionComments.slice(start, end)
+  }
+
+  async findManyByQuestionIdWithAuthor(params: {
+    questionId: string
+    page: number
+    perPage: number
+  }): Promise<CommentWithAuthor[]> {
+    const { page = 1, perPage = 10, questionId } = params
+
+    const start = (page - 1) * perPage
+    const end = start + perPage
+
+    const questionComments = this.questionsComments
+      .filter((comment) => comment.questionId.id === questionId)
+      .map((comment) => {
+        return CommentWithAuthor.create({
+          author: {
+            id: comment.authorId.id,
+            name:
+              this.studentsRepository.students.find(
+                (student) => student.id === comment.authorId.id,
+              )?.name || 'Unknown',
+          },
+          comment: {
+            id: comment.id,
+            content: comment.content,
+            createdAt: comment.createdAt,
+            updatedAt: comment.updatedAt,
+          },
+        })
+      })
 
     return questionComments.slice(start, end)
   }
