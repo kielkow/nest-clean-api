@@ -5,12 +5,17 @@ import { QuestionsCommentsRepository } from '@/domain/forum/application/reposito
 
 import { PrismaService } from '../prisma.service'
 import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper'
+import { PrismaStudentsRepository } from './prisma-students-repository'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
 
 @Injectable()
 export class PrismaQuestionCommentsRepository
   implements QuestionsCommentsRepository
 {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private studentsRepository?: PrismaStudentsRepository,
+  ) {}
 
   async create(questionComment: QuestionComment): Promise<QuestionComment> {
     const prismaComment = await this.prisma.comment.create({
@@ -44,6 +49,43 @@ export class PrismaQuestionCommentsRepository
     })
 
     return prismaComments.map(PrismaQuestionCommentMapper.toDomain)
+  }
+
+  async findManyByQuestionIdWithAuthor(params: {
+    questionId: string
+    page: number
+    perPage: number
+  }): Promise<CommentWithAuthor[]> {
+    const { questionId, page = 1, perPage = 10 } = params
+
+    const prismaComments = await this.prisma.comment.findMany({
+      take: perPage,
+      skip: (page - 1) * perPage,
+      where: { questionId },
+    })
+
+    const studentsIds = prismaComments.map((comment) => comment.authorId)
+
+    const students = await this.prisma.user.findMany({
+      where: { id: { in: studentsIds } },
+    })
+
+    const commentsWithAuthor = prismaComments.map((prismaComment, index) => {
+      return CommentWithAuthor.create({
+        author: {
+          id: prismaComment.authorId,
+          name: students[index].name || 'Unknown',
+        },
+        comment: {
+          id: prismaComment.id,
+          content: prismaComment.content,
+          createdAt: prismaComment.createdAt,
+          updatedAt: prismaComment.updatedAt,
+        },
+      })
+    })
+
+    return commentsWithAuthor
   }
 
   async delete(id: string): Promise<void> {
