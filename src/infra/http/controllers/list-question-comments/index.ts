@@ -5,12 +5,12 @@ import { ResourceNotFoundError } from '@/core/errors'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
+import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
+
 import {
   ListCommentsDTO,
   ListCommentsSchema,
 } from '../../dtos/list-comments.dto'
-
-import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
 
 import { httpErrorsTreatment } from '../../errors/http-treatment'
 import { CommentPresenter } from '../../presenter/comment-presenter'
@@ -46,6 +46,8 @@ export class ListQuestionCommentsController {
       return httpErrorsTreatment(result)
     }
 
-    return value.map(CommentPresenter.toHTTP)
+    const comments = value.map(CommentPresenter.toHTTPWithAuthor)
+
+    return comments
   }
 }

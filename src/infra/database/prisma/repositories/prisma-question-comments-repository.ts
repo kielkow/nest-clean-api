@@ -5,7 +5,6 @@ import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-obje
 import { QuestionsCommentsRepository } from '@/domain/forum/application/repositories/questions-comments-repository'
 
 import { PrismaService } from '../prisma.service'
-import { PrismaStudentsRepository } from './prisma-students-repository'
 
 import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper'
 import { PrismaCommentWithAuthorMapper } from '../mappers/prisma-comment-with-author-mapper'
@@ -14,10 +13,7 @@ import { PrismaCommentWithAuthorMapper } from '../mappers/prisma-comment-with-au
 export class PrismaQuestionCommentsRepository
   implements QuestionsCommentsRepository
 {
-  constructor(
-    private prisma: PrismaService,
-    private studentsRepository?: PrismaStudentsRepository,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(questionComment: QuestionComment): Promise<QuestionComment> {
     const prismaComment = await this.prisma.comment.create({
