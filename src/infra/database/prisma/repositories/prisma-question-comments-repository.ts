@@ -70,11 +70,13 @@ export class PrismaQuestionCommentsRepository
       where: { id: { in: studentsIds } },
     })
 
-    const commentsWithAuthor = prismaComments.map((prismaComment, index) => {
+    const commentsWithAuthor = prismaComments.map((prismaComment) => {
       return CommentWithAuthor.create({
         author: {
           id: prismaComment.authorId,
-          name: students[index].name || 'Unknown',
+          name:
+            students.find((student) => student.id === prismaComment.authorId)
+              ?.name || 'Unknown',
         },
         comment: {
           id: prismaComment.id,
