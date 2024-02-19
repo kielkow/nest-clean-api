@@ -17,8 +17,8 @@ export function makeQuestionComment(
 ): QuestionComment {
   return QuestionComment.create(
     {
-      authorId: new UniqueEntityID(),
-      questionId: new UniqueEntityID(),
+      authorId: props.authorId || new UniqueEntityID(),
+      questionId: props.questionId || new UniqueEntityID(),
       content: faker.lorem.text(),
       ...props,
     },

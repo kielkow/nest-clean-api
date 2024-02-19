@@ -9,7 +9,7 @@ export class InMemoryQuestionsCommentsRepository
 {
   private questionsComments: QuestionComment[] = []
 
-  constructor(private studentsRepository: InMemoryStudentsRepository) {}
+  constructor(private studentsRepository?: InMemoryStudentsRepository) {}
 
   async create(questionComment: QuestionComment): Promise<QuestionComment> {
     this.questionsComments.push(questionComment)
@@ -44,6 +44,10 @@ export class InMemoryQuestionsCommentsRepository
     page: number
     perPage: number
   }): Promise<CommentWithAuthor[]> {
+    if (!this.studentsRepository) {
+      throw new Error('Students repository not found')
+    }
+
     const { page = 1, perPage = 10, questionId } = params
 
     const start = (page - 1) * perPage
@@ -56,7 +60,7 @@ export class InMemoryQuestionsCommentsRepository
           author: {
             id: comment.authorId.id,
             name:
-              this.studentsRepository.students.find(
+              this.studentsRepository?.students.find(
                 (student) => student.id === comment.authorId.id,
               )?.name || 'Unknown',
           },

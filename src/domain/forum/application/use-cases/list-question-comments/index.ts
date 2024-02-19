@@ -4,7 +4,7 @@ import { ResponseHandling, fail, success } from '@/core/response-handling'
 
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
-import { QuestionComment } from '@/domain/forum/enterprise/entities/question-comment'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
 
 import { QuestionsRepository } from '../../repositories/questions-repository'
 import { QuestionsCommentsRepository } from '../../repositories/questions-comments-repository'
@@ -16,7 +16,7 @@ interface Input {
   paginationParams: PaginationParams
 }
 
-type Output = ResponseHandling<ResourceNotFoundError, QuestionComment[]>
+type Output = ResponseHandling<ResourceNotFoundError, CommentWithAuthor[]>
 
 @Injectable()
 export class ListQuestionCommentsUseCase {
@@ -31,11 +31,12 @@ export class ListQuestionCommentsUseCase {
     const question = await this.questionsRepository.findById(questionId)
     if (!question) return fail(new ResourceNotFoundError())
 
-    const questionComments = await this.questionCommentRepository.findAll({
-      questionId,
-      page,
-      perPage,
-    })
+    const questionComments =
+      await this.questionCommentRepository.findManyByQuestionIdWithAuthor({
+        questionId,
+        page,
+        perPage,
+      })
 
     return success(questionComments)
   }
