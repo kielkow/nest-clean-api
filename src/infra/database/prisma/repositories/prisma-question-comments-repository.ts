@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common'
 
 import { QuestionComment } from '@/domain/forum/enterprise/entities/question-comment'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
 import { QuestionsCommentsRepository } from '@/domain/forum/application/repositories/questions-comments-repository'
 
 import { PrismaService } from '../prisma.service'
-import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper'
 import { PrismaStudentsRepository } from './prisma-students-repository'
-import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
+
+import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper'
+import { PrismaCommentWithAuthorMapper } from '../mappers/prisma-comment-with-author-mapper'
 
 @Injectable()
 export class PrismaQuestionCommentsRepository
@@ -67,20 +69,9 @@ export class PrismaQuestionCommentsRepository
       },
     })
 
-    const commentsWithAuthor = prismaComments.map((prismaComment) => {
-      return CommentWithAuthor.create({
-        author: {
-          id: prismaComment.author.id,
-          name: prismaComment.author.name,
-        },
-        comment: {
-          id: prismaComment.id,
-          content: prismaComment.content,
-          createdAt: prismaComment.createdAt,
-          updatedAt: prismaComment.updatedAt,
-        },
-      })
-    })
+    const commentsWithAuthor = prismaComments.map(
+      PrismaCommentWithAuthorMapper.toDomain,
+    )
 
     return commentsWithAuthor
   }
