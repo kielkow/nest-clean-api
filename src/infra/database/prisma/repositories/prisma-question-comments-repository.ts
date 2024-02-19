@@ -62,21 +62,16 @@ export class PrismaQuestionCommentsRepository
       take: perPage,
       skip: (page - 1) * perPage,
       where: { questionId },
-    })
-
-    const studentsIds = prismaComments.map((comment) => comment.authorId)
-
-    const students = await this.prisma.user.findMany({
-      where: { id: { in: studentsIds } },
+      include: {
+        author: true,
+      },
     })
 
     const commentsWithAuthor = prismaComments.map((prismaComment) => {
       return CommentWithAuthor.create({
         author: {
-          id: prismaComment.authorId,
-          name:
-            students.find((student) => student.id === prismaComment.authorId)
-              ?.name || 'Unknown',
+          id: prismaComment.author.id,
+          name: prismaComment.author.name,
         },
         comment: {
           id: prismaComment.id,
