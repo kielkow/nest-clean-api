@@ -1,23 +1,31 @@
+import { ResourceNotFoundError } from '@/core/errors'
 import { Fail, Success } from '@/core/response-handling'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 import { makeAnswer } from '@/test/factories/make-answer'
+import { makeStudent } from '@/test/factories/make-student'
+import { makeAnswerComment } from '@/test/factories/make-answer-comment'
+
 import { InMemoryAnswersRepository } from '@/test/repositories/in-memory-answers-repository'
+import { InMemoryStudentsRepository } from '@/test/repositories/in-memory-students-repository'
 import { InMemoryAnswersCommentsRepository } from '@/test/repositories/in-memory-answers-comments-repository'
 
 import { ListAnswerCommentsUseCase } from '.'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { makeAnswerComment } from '@/test/factories/make-answer-comment'
-
-import { ResourceNotFoundError } from '@/core/errors'
 
 describe('CommentOnAnswerUseCase', () => {
   let inMemoryAnswersCommentsRepository: InMemoryAnswersCommentsRepository,
-    inMemoryAnswersRepository: InMemoryAnswersRepository
+    inMemoryAnswersRepository: InMemoryAnswersRepository,
+    inMemoryStudentsRepository: InMemoryStudentsRepository
 
   let sut: ListAnswerCommentsUseCase
 
   beforeEach(() => {
-    inMemoryAnswersCommentsRepository = new InMemoryAnswersCommentsRepository()
+    inMemoryStudentsRepository = new InMemoryStudentsRepository()
+
+    inMemoryAnswersCommentsRepository = new InMemoryAnswersCommentsRepository(
+      inMemoryStudentsRepository,
+    )
+
     inMemoryAnswersRepository = new InMemoryAnswersRepository()
 
     sut = new ListAnswerCommentsUseCase(
@@ -27,10 +35,23 @@ describe('CommentOnAnswerUseCase', () => {
   })
 
   it('should be able to list comments from answer', async () => {
-    const answer = await inMemoryAnswersRepository.createAnswer(makeAnswer())
+    const student = makeStudent({
+      name: 'John Doe',
+      email: 'jonhdoe@email.com',
+      password: 'password',
+    })
+
+    await inMemoryStudentsRepository.createStudent(student)
+
+    const answer = await inMemoryAnswersRepository.createAnswer(
+      makeAnswer({
+        authorId: new UniqueEntityID(student.id),
+      }),
+    )
 
     await inMemoryAnswersCommentsRepository.create(
       makeAnswerComment({
+        authorId: new UniqueEntityID(student.id),
         answerId: new UniqueEntityID(answer.id),
       }),
     )
@@ -47,25 +68,9 @@ describe('CommentOnAnswerUseCase', () => {
 
     expect(Success.is(result)).toBe(true)
     expect(result).toBeInstanceOf(Success)
-
-    expect(answerComments).toEqual([
-      {
-        _uniqueEnityId: {
-          _id: expect.any(String),
-        },
-        _props: {
-          authorId: {
-            _id: expect.any(String),
-          },
-          content: expect.any(String),
-          answerId: {
-            _id: answer.id,
-          },
-        },
-        _createdAt: expect.any(Date),
-        _updatedAt: undefined,
-      },
-    ])
+    expect(answerComments).toHaveLength(1)
+    expect(answerComments[0].props.author.id).toBe(student.id)
+    expect(answerComments[0].props.author.name).toBe('John Doe')
   })
 
   it('should not be able to list comments from answer if answer does not exists', async () => {
@@ -83,15 +88,29 @@ describe('CommentOnAnswerUseCase', () => {
   })
 
   it('should be able to list comments from answer with pagination', async () => {
-    const answer = await inMemoryAnswersRepository.createAnswer(makeAnswer())
+    const student = makeStudent({
+      name: 'John Doe',
+      email: 'jonhdoe@email.com',
+      password: 'password',
+    })
 
-    const firstComment = await inMemoryAnswersCommentsRepository.create(
+    await inMemoryStudentsRepository.createStudent(student)
+
+    const answer = await inMemoryAnswersRepository.createAnswer(
+      makeAnswer({
+        authorId: new UniqueEntityID(student.id),
+      }),
+    )
+
+    await inMemoryAnswersCommentsRepository.create(
       makeAnswerComment({
+        authorId: new UniqueEntityID(student.id),
         answerId: new UniqueEntityID(answer.id),
       }),
     )
-    const secondComment = await inMemoryAnswersCommentsRepository.create(
+    await inMemoryAnswersCommentsRepository.create(
       makeAnswerComment({
+        authorId: new UniqueEntityID(student.id),
         answerId: new UniqueEntityID(answer.id),
       }),
     )
@@ -116,44 +135,14 @@ describe('CommentOnAnswerUseCase', () => {
 
     expect(Success.is(firstResult)).toBe(true)
     expect(firstResult).toBeInstanceOf(Success)
+    expect(firstPageAnswerComments).toHaveLength(1)
+    expect(firstPageAnswerComments[0].props.author.id).toBe(student.id)
+    expect(firstPageAnswerComments[0].props.author.name).toBe('John Doe')
+
     expect(Success.is(secondResult)).toBe(true)
     expect(secondResult).toBeInstanceOf(Success)
-
-    expect(firstPageAnswerComments).toEqual([
-      {
-        _uniqueEnityId: {
-          _id: firstComment.id,
-        },
-        _props: {
-          authorId: {
-            _id: expect.any(String),
-          },
-          content: expect.any(String),
-          answerId: {
-            _id: answer.id,
-          },
-        },
-        _createdAt: expect.any(Date),
-        _updatedAt: undefined,
-      },
-    ])
-    expect(secondPageAnswerComments).toEqual([
-      {
-        _uniqueEnityId: {
-          _id: secondComment.id,
-        },
-        _props: {
-          authorId: {
-            _id: expect.any(String),
-          },
-          content: expect.any(String),
-          answerId: {
-            _id: answer.id,
-          },
-        },
-        _createdAt: expect.any(Date),
-        _updatedAt: undefined,
-      },
-    ])
+    expect(secondPageAnswerComments).toHaveLength(1)
+    expect(secondPageAnswerComments[0].props.author.id).toBe(student.id)
+    expect(secondPageAnswerComments[0].props.author.name).toBe('John Doe')
   })
 })

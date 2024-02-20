@@ -1,22 +1,20 @@
 import { Injectable } from '@nestjs/common'
 
+import { ResourceNotFoundError } from '@/core/errors'
+import { PaginationParams } from '@/core/repositories/pagination-params'
 import { ResponseHandling, success, fail } from '@/core/response-handling'
 
-import { PaginationParams } from '@/core/repositories/pagination-params'
-
-import { AnswerComment } from '@/domain/forum/enterprise/entities/answer-comment'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
 
 import { AnswersRepository } from '../../repositories/answers-repository'
 import { AnswersCommentsRepository } from '../../repositories/answers-comments-repository'
-
-import { ResourceNotFoundError } from '@/core/errors'
 
 interface Input {
   answerId: string
   paginationParams: PaginationParams
 }
 
-type Output = ResponseHandling<ResourceNotFoundError, AnswerComment[]>
+type Output = ResponseHandling<ResourceNotFoundError, CommentWithAuthor[]>
 
 @Injectable()
 export class ListAnswerCommentsUseCase {
@@ -31,11 +29,12 @@ export class ListAnswerCommentsUseCase {
     const answer = await this.answersRepository.findById(answerId)
     if (!answer) return fail(new ResourceNotFoundError())
 
-    const answerComments = await this.answerCommentRepository.findAll({
-      answerId,
-      page,
-      perPage,
-    })
+    const answerComments =
+      await this.answerCommentRepository.findManyByAnswerIdWithAuthor({
+        answerId,
+        page,
+        perPage,
+      })
 
     return success(answerComments)
   }
