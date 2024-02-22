@@ -5,6 +5,7 @@ import { PaginationParams } from '@/core/repositories/pagination-params'
 import { Question } from '@/domain/forum/enterprise/entities/question'
 import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository'
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
+import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details'
 
 import { PrismaService } from '../prisma.service'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
@@ -34,6 +35,17 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     })
 
     return question ? PrismaQuestionMapper.toDomain(question) : undefined
+  }
+
+  async findBySlugWithDetails(
+    slug: string,
+  ): Promise<QuestionDetails | undefined> {
+    const question = await this.prisma.question.findUnique({
+      where: { slug },
+      include: { author: true, attachments: true },
+    })
+
+    return question ? PrismaQuestionMapper.toDetails(question) : undefined
   }
 
   async findById(id: string): Promise<Question | undefined> {

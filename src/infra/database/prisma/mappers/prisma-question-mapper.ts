@@ -1,9 +1,21 @@
-import { Prisma, Question as PrismaQuestion } from '@prisma/client'
+import {
+  Prisma,
+  User as PrismaUser,
+  Question as PrismaQuestion,
+  Attachment as PrismaAttachment,
+} from '@prisma/client'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 import { Question } from '@/domain/forum/enterprise/entities/question'
 import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug'
+import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details'
+
+import { PrismaAttachmentMapper } from './prisma-attachment-mapper'
+
+type PrismaQuestionDetails = PrismaQuestion & { author: PrismaUser } & {
+  attachments: PrismaAttachment[]
+}
 
 export class PrismaQuestionMapper {
   static toDomain(prismaQuestion: PrismaQuestion): Question {
@@ -53,5 +65,29 @@ export class PrismaQuestionMapper {
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
     }
+  }
+
+  static toDetails(prismaQuestion: PrismaQuestionDetails): QuestionDetails {
+    return QuestionDetails.create({
+      id: new UniqueEntityID(prismaQuestion.id),
+      title: prismaQuestion.title,
+      content: prismaQuestion.content,
+      slug: Slug.create(prismaQuestion.slug),
+      bestAnswerId: prismaQuestion.bestAnswerId
+        ? new UniqueEntityID(prismaQuestion.bestAnswerId)
+        : undefined,
+
+      author: {
+        id: new UniqueEntityID(prismaQuestion.author.id),
+        name: prismaQuestion.author.name,
+      },
+
+      attachments: prismaQuestion.attachments.map(
+        PrismaAttachmentMapper.toDomain,
+      ),
+
+      createdAt: prismaQuestion.createdAt,
+      updatedAt: prismaQuestion.updatedAt,
+    })
   }
 }

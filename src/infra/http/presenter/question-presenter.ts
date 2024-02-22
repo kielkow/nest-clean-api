@@ -1,4 +1,3 @@
-import { Attachment } from '@/domain/forum/enterprise/entities/attachment'
 import { Question } from '@/domain/forum/enterprise/entities/question'
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details'
 
@@ -28,7 +27,13 @@ export interface IQuestionDetailsPresenter {
     name: string
   }
 
-  attachments: Attachment[]
+  attachments: {
+    id: string
+    title: string
+    type: string
+    size: number
+    url: string
+  }[]
 
   createdAt: Date
   updatedAt?: Date
@@ -68,7 +73,13 @@ export class QuestionPresenter {
         name: props.author.name,
       },
 
-      attachments: props.attachments,
+      attachments: props.attachments.map((attachment) => ({
+        id: attachment.id,
+        title: attachment.title,
+        type: attachment.type,
+        size: attachment.size,
+        url: attachment.url,
+      })),
 
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,

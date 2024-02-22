@@ -10,20 +10,30 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 
+import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug'
+
 import { StudentFactory } from '@/test/factories/make-student'
 import { QuestionFactory } from '@/test/factories/make-question'
-import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug'
+import { AttachmentFactory } from '@/test/factories/make-attachment'
+import { QuestionAttachmentFactory } from '@/test/factories/make-question-attachment'
 
 describe('Find Question By Slug Controller (E2E)', () => {
   let app: INestApplication,
     jwt: JwtService,
     studentFactory: StudentFactory,
-    questionFactory: QuestionFactory
+    questionFactory: QuestionFactory,
+    attachmentFactory: AttachmentFactory,
+    questionAttachmentFactory: QuestionAttachmentFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [
+        StudentFactory,
+        QuestionFactory,
+        AttachmentFactory,
+        QuestionAttachmentFactory,
+      ],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -32,6 +42,8 @@ describe('Find Question By Slug Controller (E2E)', () => {
 
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
+    questionAttachmentFactory = moduleRef.get(QuestionAttachmentFactory)
 
     await app.init()
   })
@@ -42,16 +54,27 @@ describe('Find Question By Slug Controller (E2E)', () => {
       email: 'jonhdoe@email.com',
       password: await hash('12345678', 8),
     })
-
     const accessToken = jwt.sign({
       sub: user.id,
     })
 
-    await questionFactory.makePrismaQuestion({
+    const question = await questionFactory.makePrismaQuestion({
       title: 'How to create a question?',
       content: 'I am having a hard time creating a question.',
       slug: Slug.create('how-to-create-a-question'),
       authorId: new UniqueEntityID(user.id),
+    })
+
+    const attachment = await attachmentFactory.makePrismaAttachment({
+      title: 'attachment',
+      type: 'image/png',
+      size: 1000,
+      url: 'http://attachment.com',
+    })
+
+    await questionAttachmentFactory.makePrismaQuestionAttachment({
+      questionId: new UniqueEntityID(question.id),
+      attachmentId: new UniqueEntityID(attachment.id),
     })
 
     const response = await request(app.getHttpServer())
@@ -61,10 +84,27 @@ describe('Find Question By Slug Controller (E2E)', () => {
 
     expect(response.status).toBe(200)
     expect(response.body).toMatchObject({
-      title: 'How to create a question?',
-      content: 'I am having a hard time creating a question.',
-      slug: 'how-to-create-a-question',
-      authorId: user.id,
+      title: question.title,
+      content: question.content,
+      slug: question.slug.value,
+
+      author: {
+        id: user.id,
+        name: user.name,
+      },
+
+      attachments: [
+        {
+          id: attachment.id,
+          title: attachment.title,
+          type: attachment.type,
+          size: attachment.size,
+          url: attachment.url,
+        },
+      ],
+
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
     })
   })
 })
