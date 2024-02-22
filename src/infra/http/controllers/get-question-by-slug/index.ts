@@ -24,6 +24,6 @@ export class FindQuestionBySlugController {
       return httpErrorsTreatment(result)
     }
 
-    return QuestionPresenter.toHTTP(value)
+    return QuestionPresenter.toHTTPWithDetails(value)
   }
 }

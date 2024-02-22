@@ -2,7 +2,7 @@ import { AttachmentsRepository } from '@/domain/forum/application/repositories/a
 import { Attachment } from '@/domain/forum/enterprise/entities/attachment'
 
 export class InMemoryAttachmentsRepository implements AttachmentsRepository {
-  private attachments: Attachment[] = []
+  attachments: Attachment[] = []
 
   async create(attachment: Attachment): Promise<Attachment> {
     this.attachments.push(attachment)

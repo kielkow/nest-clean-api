@@ -5,6 +5,7 @@ import {
   Question,
   QuestionProps,
 } from '@/domain/forum/enterprise/entities/question'
+import { QuestionAttachmentList } from '@/domain/forum/enterprise/entities/question-attachment-list'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
@@ -21,6 +22,7 @@ export function makeQuestion(
       title: props.title || faker.lorem.sentence(),
       content: props.content || faker.lorem.text(),
       authorId: props.authorId || new UniqueEntityID(),
+      attachments: props.attachments || QuestionAttachmentList.create(),
       ...props,
     },
     id,
