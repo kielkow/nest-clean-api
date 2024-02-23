@@ -20,14 +20,14 @@ export class PrismaNotificationRepository implements NotificationsRepository {
       : undefined
   }
 
-  async markAsRead(id: string) {
+  async markAsRead(id: string): Promise<void> {
     await this.prisma.notification.update({
       where: { id },
       data: { read: true, readAt: new Date() },
     })
   }
 
-  async sendNotification(notification: Notification) {
+  async sendNotification(notification: Notification): Promise<void> {
     const data = PrismaNotificationMapper.toPersistence(notification)
 
     await this.prisma.notification.create({ data })
