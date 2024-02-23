@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { DatabaseModule } from './database/database.module'
 import { StorageModule } from './storage/storage.module'
+import { EventsModule } from './events/event.module'
 
 import { EnvHelperService } from './env-helper/env-helper.service'
 
@@ -20,6 +21,7 @@ import { EnvHelperService } from './env-helper/env-helper.service'
     HttpModule,
     DatabaseModule,
     StorageModule,
+    EventsModule,
   ],
   providers: [EnvHelperService],
 })

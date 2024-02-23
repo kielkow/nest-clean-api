@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResponseHandling, success } from '@/core/response-handling'
 
@@ -13,6 +15,7 @@ export interface Input {
 
 export type Output = ResponseHandling<void, void>
 
+@Injectable()
 export class SendNotificationUseCase {
   constructor(
     private readonly notificationsRepository: NotificationsRepository,

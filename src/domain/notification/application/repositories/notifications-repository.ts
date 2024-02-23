@@ -1,11 +1,11 @@
 import { Notification } from '../../enterprise/entities/notification'
 
-export interface NotificationsRepository {
-  markAsRead(id: string): Promise<void>
+export abstract class NotificationsRepository {
+  abstract markAsRead(id: string): Promise<void>
 
-  sendNotification(notification: Notification): Promise<void>
+  abstract sendNotification(notification: Notification): Promise<void>
 
-  findById(id: string): Promise<Notification | undefined>
+  abstract findById(id: string): Promise<Notification | undefined>
 
-  findByRecipientId(recipientId: string): Promise<Notification[]>
+  abstract findByRecipientId(recipientId: string): Promise<Notification[]>
 }

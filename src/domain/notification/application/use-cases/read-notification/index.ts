@@ -1,6 +1,7 @@
-import { ResponseHandling, fail, success } from '@/core/response-handling'
+import { Injectable } from '@nestjs/common'
 
 import { NotAllowedError, ResourceNotFoundError } from '@/core/errors'
+import { ResponseHandling, fail, success } from '@/core/response-handling'
 
 import { NotificationsRepository } from '../../repositories/notifications-repository'
 
@@ -11,6 +12,7 @@ interface Input {
 
 type Output = ResponseHandling<ResourceNotFoundError | NotAllowedError, void>
 
+@Injectable()
 export class ReadNotificationUseCase {
   constructor(
     private readonly notificationsRepository: NotificationsRepository,
