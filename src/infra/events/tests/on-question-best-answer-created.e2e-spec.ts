@@ -12,22 +12,24 @@ import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
+import { AnswerFactory } from '@/test/factories/make-answer'
 import { StudentFactory } from '@/test/factories/make-student'
 import { QuestionFactory } from '@/test/factories/make-question'
 
 import { waitFor } from '@/test/utils/wait-for'
 
-describe('Event On Answer Created (E2E)', () => {
+describe('Event On Question Best Answer Created (E2E)', () => {
   let app: INestApplication,
     prisma: PrismaService,
     jwt: JwtService,
+    answerFactory: AnswerFactory,
     studentFactory: StudentFactory,
     questionFactory: QuestionFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AnswerFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -35,6 +37,7 @@ describe('Event On Answer Created (E2E)', () => {
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
+    answerFactory = moduleRef.get(AnswerFactory)
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
 
@@ -43,7 +46,7 @@ describe('Event On Answer Created (E2E)', () => {
     await app.init()
   })
 
-  it('should send notification on answer be created', async () => {
+  it('should send notification on question best answer be created', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
       email: 'jonhdoe@email.com',
@@ -59,14 +62,15 @@ describe('Event On Answer Created (E2E)', () => {
       authorId: new UniqueEntityID(user.id),
     })
 
+    const answerCreated = await answerFactory.makePrismaAnswer({
+      content: 'I am having a hard time creating a question.',
+      authorId: new UniqueEntityID(user.id),
+      questionId: new UniqueEntityID(questionCreated.id),
+    })
+
     await request(app.getHttpServer())
-      .post('/answers')
+      .patch(`/questions/${questionCreated.id}/best-answer/${answerCreated.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        authorId: user.id,
-        questionId: questionCreated.id,
-        content: 'You should just create a question.',
-      })
 
     await waitFor(async () => {
       const notification = await prisma.notification.findFirst({

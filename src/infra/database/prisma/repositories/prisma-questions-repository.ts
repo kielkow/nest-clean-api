@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
+import { DomainEvents } from '@/core/events/domain-events'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
 import { Question } from '@/domain/forum/enterprise/entities/question'
@@ -24,6 +26,10 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
 
     await this.questionAttachmentsRepository.createMany(
       question.attachments.getItems(),
+    )
+
+    DomainEvents.dispatchPublisherEventsForAggregate(
+      new UniqueEntityID(question.id),
     )
 
     return PrismaQuestionMapper.toDomain(questionCreated)
@@ -80,6 +86,10 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
           .map((attachment) => attachment.id),
       ),
     ])
+
+    DomainEvents.dispatchPublisherEventsForAggregate(
+      new UniqueEntityID(question.id),
+    )
   }
 
   async listRecentQuestions(params: PaginationParams): Promise<Question[]> {

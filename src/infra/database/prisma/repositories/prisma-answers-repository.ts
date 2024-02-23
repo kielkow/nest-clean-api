@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
+import { DomainEvents } from '@/core/events/domain-events'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository'
 import { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
@@ -21,6 +24,10 @@ export class PrismaAnswersRepository implements AnswersRepository {
 
     await this.answerAttachmentsRepository.createMany(
       answer.attachments.getItems(),
+    )
+
+    DomainEvents.dispatchPublisherEventsForAggregate(
+      new UniqueEntityID(answer.id),
     )
 
     return PrismaAnswerMapper.toDomain(prismaAnswer)
@@ -64,6 +71,10 @@ export class PrismaAnswersRepository implements AnswersRepository {
         answer.attachments.getRemovedItems().map((attachment) => attachment.id),
       ),
     ])
+
+    DomainEvents.dispatchPublisherEventsForAggregate(
+      new UniqueEntityID(answer.id),
+    )
   }
 
   async listQuetionAnswers(params: {

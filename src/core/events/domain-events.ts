@@ -8,6 +8,8 @@ export class DomainEvents {
   private static subscribers: Record<string, DomainEventCallback[]> = {}
   private static publishers: AggregateRoot<unknown>[] = []
 
+  public static shouldDispatchEvents = true
+
   public static registerPublisher(aggregate: AggregateRoot<unknown>) {
     const aggregateFound = !!this.findPublisherByID(
       new UniqueEntityID(aggregate.id),
@@ -72,7 +74,7 @@ export class DomainEvents {
 
     const isEventRegistered = eventClassName in this.subscribers
 
-    if (isEventRegistered) {
+    if (isEventRegistered && this.shouldDispatchEvents) {
       const handlers = this.subscribers[eventClassName]
 
       for (const handler of handlers) {

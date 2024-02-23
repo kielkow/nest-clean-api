@@ -37,16 +37,8 @@ export class PrismaNotificationMapper {
   static toPersistence(
     notification: Notification,
   ): Prisma.NotificationUncheckedCreateInput {
-    const {
-      id,
-      recipientId,
-      title,
-      content,
-      read,
-      readAt,
-      createdAt,
-      updatedAt,
-    } = notification
+    const { id, recipientId, title, content, read, createdAt, updatedAt } =
+      notification
 
     return {
       id,
@@ -54,7 +46,6 @@ export class PrismaNotificationMapper {
       title,
       content,
       read,
-      readAt: readAt || '',
       createdAt,
       updatedAt,
     }
