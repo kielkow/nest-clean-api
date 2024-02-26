@@ -23,6 +23,7 @@ import { CommentOnAnswerController } from './controllers/comment-on-answer'
 import { ListAnswerCommentsController } from './controllers/list-answer-comments'
 import { ListQuestionCommentsController } from './controllers/list-question-comments'
 import { UploadAttachmentController } from './controllers/upload-attachment'
+import { ReadNotificationController } from './controllers/read-notification'
 
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 import { ListRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/list-recent-questions'
@@ -43,6 +44,7 @@ import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/com
 import { ListAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/list-answer-comments'
 import { ListQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/list-question-comments'
 import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachment'
+import { ReadNotificationUseCase } from '@/domain/notification/application/use-cases/read-notification'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -66,6 +68,7 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     ListAnswerCommentsController,
     ListQuestionCommentsController,
     UploadAttachmentController,
+    ReadNotificationController,
   ],
   providers: [
     CreateQuestionUseCase,
@@ -87,6 +90,7 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     ListAnswerCommentsUseCase,
     ListQuestionCommentsUseCase,
     UploadAndCreateAttachmentUseCase,
+    ReadNotificationUseCase,
   ],
 })
 export class HttpModule {}
