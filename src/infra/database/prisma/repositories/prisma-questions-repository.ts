@@ -4,6 +4,8 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
+import { CacheRepository } from '@/infra/cache/cache-repository'
+
 import { Question } from '@/domain/forum/enterprise/entities/question'
 import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository'
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
@@ -16,6 +18,7 @@ import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(
     private prisma: PrismaService,
+    private cacheRepository: CacheRepository,
     private questionAttachmentsRepository: QuestionAttachmentsRepository,
   ) {}
 
@@ -46,12 +49,25 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
   async findBySlugWithDetails(
     slug: string,
   ): Promise<QuestionDetails | undefined> {
+    const cachedQuestion = await this.cacheRepository.get(
+      `question:${slug}:details`,
+    )
+
+    if (cachedQuestion) return JSON.parse(cachedQuestion)
+
     const question = await this.prisma.question.findUnique({
       where: { slug },
       include: { author: true, attachments: true },
     })
 
-    return question ? PrismaQuestionMapper.toDetails(question) : undefined
+    if (!question) return undefined
+
+    await this.cacheRepository.set(
+      `question:${question.id}:details`,
+      JSON.stringify(question),
+    )
+
+    return PrismaQuestionMapper.toDetails(question)
   }
 
   async findById(id: string): Promise<Question | undefined> {
@@ -90,6 +106,8 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     DomainEvents.dispatchPublisherEventsForAggregate(
       new UniqueEntityID(question.id),
     )
+
+    await this.cacheRepository.delete(`question:${question.id}:details`)
   }
 
   async listRecentQuestions(params: PaginationParams): Promise<Question[]> {
