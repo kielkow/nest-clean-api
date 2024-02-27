@@ -62,12 +62,14 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
 
     if (!question) return undefined
 
+    const questionDetails = PrismaQuestionMapper.toDetails(question)
+
     await this.cacheRepository.set(
       `question:${question.id}:details`,
-      JSON.stringify(question),
+      JSON.stringify(questionDetails),
     )
 
-    return PrismaQuestionMapper.toDetails(question)
+    return questionDetails
   }
 
   async findById(id: string): Promise<Question | undefined> {
