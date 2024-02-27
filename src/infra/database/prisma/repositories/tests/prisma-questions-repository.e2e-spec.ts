@@ -96,4 +96,36 @@ describe('Prisma Questions Repository (E2E)', () => {
     expect(questionDetails).toBeTruthy()
     expect(cachePayload).toEqual(JSON.stringify(questionDetails))
   })
+
+  it('should reset question details cache on saving the question', async () => {
+    const user = await studentFactory.makePrismaStudent({
+      name: 'John Doe Third',
+      email: 'jonhdoethird@email.com',
+      password: await hash('12345678', 8),
+    })
+
+    const question = await questionFactory.makePrismaQuestion({
+      title: 'How to create a third question?',
+      content: 'I am having a hard time creating a third question.',
+      slug: Slug.create('how-to-create-a-third-question'),
+      authorId: new UniqueEntityID(user.id),
+    })
+
+    await questionsRepository.findBySlugWithDetails(question.slug.value)
+    await questionsRepository.editQuestion(question)
+    const emptyCache = await cacheRepository.get(
+      `question:${question.slug.value}:details`,
+    )
+
+    const questionDetails = await questionsRepository.findBySlugWithDetails(
+      question.slug.value,
+    )
+    const cachedQuestionDetails = await cacheRepository.get(
+      `question:${question.slug.value}:details`,
+    )
+
+    expect(emptyCache).toBeFalsy()
+    expect(cachedQuestionDetails).toBeTruthy()
+    expect(cachedQuestionDetails).toEqual(JSON.stringify(questionDetails))
+  })
 })

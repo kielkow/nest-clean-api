@@ -109,7 +109,7 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       new UniqueEntityID(question.id),
     )
 
-    await this.cacheRepository.delete(`question:${question.id}:details`)
+    await this.cacheRepository.delete(`question:${question.slug.value}:details`)
   }
 
   async listRecentQuestions(params: PaginationParams): Promise<Question[]> {
