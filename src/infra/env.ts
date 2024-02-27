@@ -22,6 +22,11 @@ export const envSchema = z.object({
   STORAGE_S3_ACCESS_KEY_ID: z.string(),
   STORAGE_S3_SECRET_ACCESS_KEY: z.string(),
   STORAGE_CLOUDFLARE_ID: z.string(),
+
+  REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string().default(''),
+  REDIS_DB: z.coerce.number().default(0),
 })
 
 export type Env = z.infer<typeof envSchema>
