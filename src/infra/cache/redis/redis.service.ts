@@ -1,8 +1,9 @@
 import { Redis } from 'ioredis'
-import { OnModuleDestroy } from '@nestjs/common'
+import { Injectable, OnModuleDestroy } from '@nestjs/common'
 
 import { EnvHelperService } from '@/infra/env-helper/env-helper.service'
 
+@Injectable()
 export class RedisService extends Redis implements OnModuleDestroy {
   constructor(envHelperService: EnvHelperService) {
     const host = envHelperService.get('REDIS_HOST')
@@ -20,17 +21,5 @@ export class RedisService extends Redis implements OnModuleDestroy {
 
   async onModuleDestroy() {
     this.disconnect()
-  }
-
-  async getCache(key: string): Promise<string | null> {
-    return await this.get(key)
-  }
-
-  async setCache(key: string, value: string): Promise<void> {
-    await this.set(key, value)
-  }
-
-  async deleteCache(key: string): Promise<void> {
-    await this.del(key)
   }
 }
