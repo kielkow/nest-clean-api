@@ -97,7 +97,7 @@ describe('Prisma Questions Repository (E2E)', () => {
     expect(cachePayload).toEqual(JSON.stringify(questionDetails))
   })
 
-  it('should reset question details cache on saving the question', async () => {
+  it('should reset question details cache on editing the question', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe Third',
       email: 'jonhdoethird@email.com',
