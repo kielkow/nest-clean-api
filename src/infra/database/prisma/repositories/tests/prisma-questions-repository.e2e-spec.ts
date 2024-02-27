@@ -40,7 +40,7 @@ describe('Prisma Questions Repository (E2E)', () => {
     await app.init()
   })
 
-  it('should be use cache on find question details by slug', async () => {
+  it('should be save question details on cache', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
       email: 'jonhdoe@email.com',
@@ -59,10 +59,41 @@ describe('Prisma Questions Repository (E2E)', () => {
     )
 
     const cachedQuestionDetails = await cacheRepository.get(
-      `question:${question.id}:details`,
+      `question:${question.slug.value}:details`,
     )
 
     expect(cachedQuestionDetails).toBeTruthy()
     expect(cachedQuestionDetails).toEqual(JSON.stringify(questionDetails))
+  })
+
+  it('should be use cache on find question details by slug', async () => {
+    const user = await studentFactory.makePrismaStudent({
+      name: 'John Doe Second',
+      email: 'jonhdoesecond@email.com',
+      password: await hash('12345678', 8),
+    })
+
+    const question = await questionFactory.makePrismaQuestion({
+      title: 'How to create a second question?',
+      content: 'I am having a hard time creating a second question.',
+      slug: Slug.create('how-to-create-a-second-question'),
+      authorId: new UniqueEntityID(user.id),
+    })
+
+    const cachePayload = JSON.stringify({
+      id: question.id,
+    })
+
+    await cacheRepository.set(
+      `question:${question.slug.value}:details`,
+      cachePayload,
+    )
+
+    const questionDetails = await questionsRepository.findBySlugWithDetails(
+      question.slug.value,
+    )
+
+    expect(questionDetails).toBeTruthy()
+    expect(cachePayload).toEqual(JSON.stringify(questionDetails))
   })
 })

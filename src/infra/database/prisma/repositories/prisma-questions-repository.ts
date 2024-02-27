@@ -65,7 +65,7 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     const questionDetails = PrismaQuestionMapper.toDetails(question)
 
     await this.cacheRepository.set(
-      `question:${question.id}:details`,
+      `question:${question.slug}:details`,
       JSON.stringify(questionDetails),
     )
 

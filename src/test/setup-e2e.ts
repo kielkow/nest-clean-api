@@ -33,7 +33,7 @@ function generateUniqueDatabaseURL(schemaId: string) {
 const schemaId = randomUUID()
 
 beforeAll(async () => {
-  env.DATABASE_URL = generateUniqueDatabaseURL(schemaId)
+  process.env.DATABASE_URL = generateUniqueDatabaseURL(schemaId)
 
   DomainEvents.shouldDispatchEvents = false
 
